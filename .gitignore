@@ -1,0 +1,10 @@
+build/
+devel/
+install/
+log/
+debs/
+.work/
+.catkin_tools/
+Testing/
+*.pyc
+__pycache__/

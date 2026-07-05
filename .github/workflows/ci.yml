@@ -1,0 +1,94 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - noetic
+  pull_request:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  package-compliance:
+    name: Package compliance
+    runs-on: ubuntu-latest
+    container: ros:noetic-ros-base-focal
+    steps:
+      - name: Install checkout dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates git
+
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            build-essential \
+            cmake \
+            git \
+            rsync \
+            ros-noetic-message-generation \
+            ros-noetic-roslaunch \
+            ros-noetic-rosmsg \
+            ros-noetic-rospack \
+            ros-noetic-std-msgs
+
+      - name: Build and inspect messages
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git diff --check HEAD
+
+          work_dir="${RUNNER_TEMP}/state-machine-msgs-compliance"
+          install_root="${RUNNER_TEMP}/state-machine-msgs-install-root"
+          rm -rf "$work_dir" "$install_root"
+          mkdir -p "$work_dir/src/state-machine-msgs"
+          rsync -a --delete "$GITHUB_WORKSPACE/" "$work_dir/src/state-machine-msgs/"
+
+          cd "$work_dir"
+          set +u
+          source /opt/ros/noetic/setup.bash
+          set -u
+          catkin_make
+          DESTDIR="$install_root" catkin_make install \
+            -DCMAKE_INSTALL_PREFIX=/opt/ros/noetic \
+            -DCMAKE_BUILD_TYPE=Release
+          set +u
+          source devel/setup.bash
+          set -u
+          test "$(rospack find state_machine_msgs)" = "$work_dir/src/state-machine-msgs"
+          rosmsg show state_machine_msgs/StateMachineTrace | grep -q '^uint64 update_index$'
+          rosmsg show state_machine_msgs/StateMachineTraceEvent | grep -q '^uint32 event_id$'
+
+  build-debs:
+    name: Build debs (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and install-check deb package in Docker
+        run: |
+          .xgc2/scripts/build_debs_in_docker.sh \
+            --work-dir "$RUNNER_TEMP/state-machine-msgs-${{ matrix.arch }}" \
+            --output-dir "$GITHUB_WORKSPACE/debs"
+
+      - name: Upload deb artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: xgc2-state-machine-msgs-debs-${{ matrix.arch }}
+          path: debs/*.deb

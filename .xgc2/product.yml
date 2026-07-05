@@ -1,0 +1,37 @@
+schema: xgc2.product.v1
+id: xgc2-state-machine-msgs
+name: XGC2 State Machine Messages
+version: 0.1.0-1
+kind: ros1-apt
+summary: Generic ROS1 message interfaces for XGC2 state-machine runtime traces.
+ros:
+  distro: noetic
+  packages:
+  - state_machine_msgs
+apt:
+  distribution: focal
+  install:
+  - ros-noetic-xgc2-state-machine-msgs
+  packages:
+  - ros-noetic-xgc2-state-machine-msgs
+  depends:
+  - ros-noetic-message-runtime
+  - ros-noetic-std-msgs
+usage:
+  install: 'sudo apt update
+
+    sudo apt install ros-noetic-xgc2-state-machine-msgs
+
+    '
+  smoke_test: 'rospack find state_machine_msgs
+
+    '
+ownership:
+  paths:
+  - /opt/ros/noetic/share/state_machine_msgs
+  - /opt/ros/noetic/include/state_machine_msgs
+  - /opt/ros/noetic/lib/python3/dist-packages/state_machine_msgs
+  - /opt/ros/noetic/lib/pkgconfig/state_machine_msgs.pc
+  - /opt/ros/noetic/share/gennodejs/ros/state_machine_msgs
+  - /opt/ros/noetic/share/common-lisp/ros/state_machine_msgs
+  - /opt/ros/noetic/share/roseus/ros/state_machine_msgs
