@@ -1,37 +1,52 @@
 schema: xgc2.product.v1
-id: xgc2-state-machine-msgs
-name: XGC2 State Machine Messages
-version: 0.1.0-1
+id: xgc2-ros-msgs
+name: XGC2 ROS1 Messages
+version: 1.2.0-1
 kind: ros1-apt
-summary: Generic ROS1 message interfaces for XGC2 state-machine runtime traces.
+summary: Shared ROS1 message interfaces for XGC2 components.
 ros:
   distro: noetic
   packages:
   - state_machine_msgs
+  - hover_thrust_estimator_msgs
+  - rigid_state_estimator_msgs
+  - multirotor_reference_trajectory_msgs
+  - px4_multirotor_controller_msgs
+  - unicycle_reference_trajectory_msgs
 apt:
   distribution: focal
   install:
-  - ros-noetic-xgc2-state-machine-msgs
+  - ros-noetic-xgc2-ros-msgs
   packages:
   - ros-noetic-xgc2-state-machine-msgs
+  - ros-noetic-xgc2-estimator-hover-thrust-msgs
+  - ros-noetic-xgc2-estimator-rigid-state-msgs
+  - ros-noetic-xgc2-multirotor-reference-trajectory-msgs
+  - ros-noetic-xgc2-px4-multirotor-controller-msgs
+  - ros-noetic-xgc2-unicycle-reference-trajectory-msgs
+  - ros-noetic-xgc2-ros-msgs
   depends:
   - ros-noetic-message-runtime
   - ros-noetic-std-msgs
+  - ros-noetic-geometry-msgs
 usage:
   install: 'sudo apt update
 
-    sudo apt install ros-noetic-xgc2-state-machine-msgs
+    sudo apt install ros-noetic-xgc2-ros-msgs
 
     '
   smoke_test: 'rospack find state_machine_msgs
+
+    rospack find hover_thrust_estimator_msgs
+
+    rospack find rigid_state_estimator_msgs
 
     '
 ownership:
   paths:
   - /opt/ros/noetic/share/state_machine_msgs
-  - /opt/ros/noetic/include/state_machine_msgs
-  - /opt/ros/noetic/lib/python3/dist-packages/state_machine_msgs
-  - /opt/ros/noetic/lib/pkgconfig/state_machine_msgs.pc
-  - /opt/ros/noetic/share/gennodejs/ros/state_machine_msgs
-  - /opt/ros/noetic/share/common-lisp/ros/state_machine_msgs
-  - /opt/ros/noetic/share/roseus/ros/state_machine_msgs
+  - /opt/ros/noetic/share/hover_thrust_estimator_msgs
+  - /opt/ros/noetic/share/rigid_state_estimator_msgs
+  - /opt/ros/noetic/share/multirotor_reference_trajectory_msgs
+  - /opt/ros/noetic/share/px4_multirotor_controller_msgs
+  - /opt/ros/noetic/share/unicycle_reference_trajectory_msgs

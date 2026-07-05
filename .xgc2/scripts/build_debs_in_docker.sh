@@ -40,7 +40,7 @@ docker pull "${DOCKER_IMAGE}"
 docker run --rm \
   -e DEBIAN_FRONTEND=noninteractive \
   -e INSTALL_CHECK="${INSTALL_CHECK}" \
-  -v "${REPO_ROOT}:/workspace/state-machine-msgs:ro" \
+  -v "${REPO_ROOT}:/workspace/ros1-msgs:ro" \
   -v "${WORK_DIR}:/workspace/work" \
   -v "${OUTPUT_DIR}:/workspace/out" \
   "${DOCKER_IMAGE}" \
@@ -57,6 +57,7 @@ docker run --rm \
       fakeroot \
       git \
       rsync \
+      ros-noetic-geometry-msgs \
       ros-noetic-message-generation \
       ros-noetic-roslaunch \
       ros-noetic-rosmsg \
@@ -64,8 +65,8 @@ docker run --rm \
       ros-noetic-std-msgs
 
     rm -rf /workspace/work/src /workspace/work/build /workspace/work/devel /workspace/work/install-root
-    mkdir -p /workspace/work/src/state-machine-msgs
-    rsync -a --delete /workspace/state-machine-msgs/ /workspace/work/src/state-machine-msgs/
+    mkdir -p /workspace/work/src/ros1-msgs
+    rsync -a --delete /workspace/ros1-msgs/ /workspace/work/src/ros1-msgs/
 
     cd /workspace/work
     set +u
@@ -75,13 +76,13 @@ docker run --rm \
       -DCMAKE_INSTALL_PREFIX=/opt/ros/noetic \
       -DCMAKE_BUILD_TYPE=Release
 
-    /workspace/state-machine-msgs/.xgc2/scripts/package_debs.sh \
+    /workspace/ros1-msgs/.xgc2/scripts/package_debs.sh \
       --install-root /workspace/work/install-root \
       --output-dir /workspace/out
 
     if [[ "${INSTALL_CHECK}" == "true" ]]; then
       apt-get install -y /workspace/out/*.deb
-      /workspace/state-machine-msgs/.xgc2/scripts/check_installed_packages.sh
+      /workspace/ros1-msgs/.xgc2/scripts/check_installed_packages.sh
     fi
   '
 

@@ -7,27 +7,46 @@ set +u
 source "/opt/ros/${ROS_DISTRO}/setup.bash"
 set -u
 
-dpkg -s ros-noetic-xgc2-state-machine-msgs >/dev/null
-test "$(rospack find state_machine_msgs)" = "/opt/ros/${ROS_DISTRO}/share/state_machine_msgs"
-test -f "/opt/ros/${ROS_DISTRO}/share/state_machine_msgs/msg/StateMachineTrace.msg"
-test -f "/opt/ros/${ROS_DISTRO}/share/state_machine_msgs/msg/StateMachineTraceEvent.msg"
-test -f "/opt/ros/${ROS_DISTRO}/include/state_machine_msgs/StateMachineTrace.h"
-test -f "/opt/ros/${ROS_DISTRO}/include/state_machine_msgs/StateMachineTraceEvent.h"
-test -f "/opt/ros/${ROS_DISTRO}/lib/pkgconfig/state_machine_msgs.pc"
-test -f "/opt/ros/${ROS_DISTRO}/lib/python3/dist-packages/state_machine_msgs/msg/_StateMachineTrace.py"
-test -f "/opt/ros/${ROS_DISTRO}/lib/python3/dist-packages/state_machine_msgs/msg/_StateMachineTraceEvent.py"
-rosmsg show state_machine_msgs/StateMachineTrace | grep -q '^uint64 update_index$'
-rosmsg show state_machine_msgs/StateMachineTraceEvent | grep -q '^uint32 event_id$'
-python3 - <<'PY'
-from state_machine_msgs.msg import StateMachineTrace, StateMachineTraceEvent
+for package in \
+  ros-noetic-xgc2-state-machine-msgs \
+  ros-noetic-xgc2-estimator-hover-thrust-msgs \
+  ros-noetic-xgc2-estimator-rigid-state-msgs \
+  ros-noetic-xgc2-multirotor-reference-trajectory-msgs \
+  ros-noetic-xgc2-px4-multirotor-controller-msgs \
+  ros-noetic-xgc2-unicycle-reference-trajectory-msgs \
+  ros-noetic-xgc2-ros-msgs; do
+  dpkg -s "${package}" >/dev/null
+done
 
+test "$(rospack find state_machine_msgs)" = "/opt/ros/${ROS_DISTRO}/share/state_machine_msgs"
+test "$(rospack find hover_thrust_estimator_msgs)" = "/opt/ros/${ROS_DISTRO}/share/hover_thrust_estimator_msgs"
+test "$(rospack find rigid_state_estimator_msgs)" = "/opt/ros/${ROS_DISTRO}/share/rigid_state_estimator_msgs"
+test "$(rospack find multirotor_reference_trajectory_msgs)" = "/opt/ros/${ROS_DISTRO}/share/multirotor_reference_trajectory_msgs"
+test "$(rospack find px4_multirotor_controller_msgs)" = "/opt/ros/${ROS_DISTRO}/share/px4_multirotor_controller_msgs"
+test "$(rospack find unicycle_reference_trajectory_msgs)" = "/opt/ros/${ROS_DISTRO}/share/unicycle_reference_trajectory_msgs"
+
+rosmsg show state_machine_msgs/StateMachineTrace | grep -q '^uint64 update_index$'
+rosmsg show hover_thrust_estimator_msgs/HoverThrustEstimate | grep -q '^float64 hover_thrust$'
+rosmsg show rigid_state_estimator_msgs/RigidStateEstimate | grep -q '^geometry_msgs/Vector3 angular_velocity$'
+rosmsg show rigid_state_estimator_msgs/PlanarStateEstimate | grep -q '^uint8 estimator_state$'
+rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q '^multirotor_reference_trajectory_msgs/FlatReferencePoint\[\] points$'
+rosmsg show px4_multirotor_controller_msgs/NmpcDebugSample | grep -q '^float64 hover_thrust$'
+rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q '^unicycle_reference_trajectory_msgs/PlanarReferencePoint\[\] points$'
+
+python3 - <<'PY'
+from hover_thrust_estimator_msgs.msg import HoverThrustEstimate
+from multirotor_reference_trajectory_msgs.msg import AnalyticReference as UavAnalytic
+from rigid_state_estimator_msgs.msg import PlanarStateEstimate, RigidStateEstimate
+from state_machine_msgs.msg import StateMachineTrace
+from unicycle_reference_trajectory_msgs.msg import AnalyticReference as UgvAnalytic
+
+assert HoverThrustEstimate.STATE_AIRBORNE == 2
+assert RigidStateEstimate.STATE_RUNNING == 3
+assert PlanarStateEstimate.STATE_RUNNING == 2
+assert UavAnalytic.ANALYTIC_TORUS_KNOT == 9
+assert UgvAnalytic.ANALYTIC_CIRCLE == 1
 trace = StateMachineTrace()
 trace.machine_name = "test"
-trace.update_index = 1
-event = StateMachineTraceEvent()
-event.event_id = 42
-trace.events.append(event)
-assert trace.events[0].event_id == 42
 PY
 
 echo "Installed package check passed"

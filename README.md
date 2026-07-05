@@ -1,48 +1,48 @@
-# XGC2 State Machine Messages
+# XGC2 ROS1 Messages
 
-Generic ROS1 message interfaces for publishing state-machine runtime traces.
+Shared ROS1 message interfaces for XGC2 Noetic packages.
 
-This repository owns the `state_machine_msgs` ROS package on the `noetic`
-branch. It is intentionally independent from any product-specific state machine
-implementation. Runtime packages should publish their own business status on
-their own topics and use these messages only for state-machine observability.
+This repository owns interface-only packages. Implementation packages should
+depend on these packages when they only need a topic contract.
 
-## Messages
+## Packages
 
-`state_machine_msgs/StateMachineTrace` describes one state-machine update
-snapshot:
+- `state_machine_msgs`
+- `hover_thrust_estimator_msgs`
+- `rigid_state_estimator_msgs`
+- `multirotor_reference_trajectory_msgs`
+- `px4_multirotor_controller_msgs`
+- `unicycle_reference_trajectory_msgs`
 
-- `header`: ROS timestamp of the trace publication.
-- `machine_name`: logical state-machine name.
-- `update_index`: monotonically increasing state-machine update index.
-- `active_region_ids` and `active_state_ids`: active leaf-state snapshot.
-- `events`: event-generation, event-consumption, transition, or deferred-event
-  records from that update.
+## Debian Packages
 
-`state_machine_msgs/StateMachineTraceEvent` describes one trace record:
+The release workflow publishes one Debian package per ROS package, plus an
+aggregate package:
 
-- `phase`: caller-defined update phase, such as transition pass or tick pass.
-- `kind`: generated event, consumed event, committed transition, or deferred
-  internal event.
-- `event_id`, `event_name`, `category`, `source`, `sequence`,
-  `correlation_id`: event identity and provenance.
-- `producer_region`, `producer_state`: state that generated the event, when
-  applicable.
-- `consumer_region`, `from_state`, `to_state`, `transition_id`, `priority`:
-  transition or consumption context, when applicable.
+- `ros-noetic-xgc2-state-machine-msgs`
+- `ros-noetic-xgc2-estimator-hover-thrust-msgs`
+- `ros-noetic-xgc2-estimator-rigid-state-msgs`
+- `ros-noetic-xgc2-multirotor-reference-trajectory-msgs`
+- `ros-noetic-xgc2-px4-multirotor-controller-msgs`
+- `ros-noetic-xgc2-unicycle-reference-trajectory-msgs`
+- `ros-noetic-xgc2-ros-msgs`
+
+Use the smallest specific package when a consumer only needs one interface
+family. Use `ros-noetic-xgc2-ros-msgs` when a workspace wants all shared XGC2
+ROS1 interfaces.
 
 ## Build
 
 ```bash
 source /opt/ros/noetic/setup.bash
-mkdir -p /tmp/state-machine-msgs-ws/src
-rsync -a . /tmp/state-machine-msgs-ws/src/state-machine-msgs
-cd /tmp/state-machine-msgs-ws
+mkdir -p /tmp/xgc2-ros-msgs-ws/src
+rsync -a . /tmp/xgc2-ros-msgs-ws/src/xgc2-ros-msgs
+cd /tmp/xgc2-ros-msgs-ws
 catkin_make
 ```
 
 ## Package
 
 ```bash
-.xgc2/scripts/build_debs_in_docker.sh --work-dir /tmp/xgc2-state-machine-msgs --output-dir ./debs
+.xgc2/scripts/build_debs_in_docker.sh --work-dir /tmp/xgc2-ros-msgs --output-dir ./debs
 ```
