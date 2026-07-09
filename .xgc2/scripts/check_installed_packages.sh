@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROS_DISTRO="${ROS_DISTRO:-noetic}"
+ROS_DISTRO="${ROS_DISTRO:-melodic}"
 set +u
 # shellcheck source=/dev/null
 source "/opt/ros/${ROS_DISTRO}/setup.bash"
 set -u
 
 for package in \
-  ros-noetic-xgc2-state-machine-msgs \
-  ros-noetic-xgc2-estimator-hover-thrust-msgs \
-  ros-noetic-xgc2-estimator-rigid-state-msgs \
-  ros-noetic-xgc2-multirotor-reference-trajectory-msgs \
-  ros-noetic-xgc2-px4-multirotor-controller-msgs \
-  ros-noetic-xgc2-unicycle-reference-trajectory-msgs \
-  ros-noetic-xgc2-ros-msgs; do
+  ros-melodic-xgc2-state-machine-msgs \
+  ros-melodic-xgc2-estimator-hover-thrust-msgs \
+  ros-melodic-xgc2-estimator-rigid-state-msgs \
+  ros-melodic-xgc2-multirotor-reference-trajectory-msgs \
+  ros-melodic-xgc2-px4-multirotor-controller-msgs \
+  ros-melodic-xgc2-unicycle-reference-trajectory-msgs \
+  ros-melodic-xgc2-ros-msgs; do
   dpkg -s "${package}" >/dev/null
 done
 

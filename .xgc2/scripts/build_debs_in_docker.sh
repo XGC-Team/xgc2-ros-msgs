@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
-DOCKER_IMAGE="${DOCKER_IMAGE:-ros:noetic-ros-base-focal}"
+DOCKER_IMAGE="${DOCKER_IMAGE:-ros:melodic-ros-base-bionic}"
 WORK_DIR="${WORK_DIR:-${REPO_ROOT}/.work/docker}"
 OUTPUT_DIR="${OUTPUT_DIR:-${REPO_ROOT}/debs}"
 INSTALL_CHECK="${INSTALL_CHECK:-true}"
@@ -57,12 +57,12 @@ docker run --rm \
       fakeroot \
       git \
       rsync \
-      ros-noetic-geometry-msgs \
-      ros-noetic-message-generation \
-      ros-noetic-roslaunch \
-      ros-noetic-rosmsg \
-      ros-noetic-rospack \
-      ros-noetic-std-msgs
+      ros-melodic-geometry-msgs \
+      ros-melodic-message-generation \
+      ros-melodic-roslaunch \
+      ros-melodic-rosmsg \
+      ros-melodic-rospack \
+      ros-melodic-std-msgs
 
     rm -rf /workspace/work/src /workspace/work/build /workspace/work/devel /workspace/work/install-root
     mkdir -p /workspace/work/src/ros1-msgs
@@ -70,10 +70,10 @@ docker run --rm \
 
     cd /workspace/work
     set +u
-    source /opt/ros/noetic/setup.bash
+    source /opt/ros/melodic/setup.bash
     set -u
     DESTDIR=/workspace/work/install-root catkin_make install \
-      -DCMAKE_INSTALL_PREFIX=/opt/ros/noetic \
+      -DCMAKE_INSTALL_PREFIX=/opt/ros/melodic \
       -DCMAKE_BUILD_TYPE=Release
 
     /workspace/ros1-msgs/.xgc2/scripts/package_debs.sh \

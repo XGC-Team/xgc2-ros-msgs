@@ -5,7 +5,7 @@ version: 1.2.0-1
 kind: ros1-apt
 summary: Shared ROS1 message interfaces for XGC2 components.
 ros:
-  distro: noetic
+  distro: melodic
   packages:
   - state_machine_msgs
   - hover_thrust_estimator_msgs
@@ -14,25 +14,25 @@ ros:
   - px4_multirotor_controller_msgs
   - unicycle_reference_trajectory_msgs
 apt:
-  distribution: focal
+  distribution: bionic
   install:
-  - ros-noetic-xgc2-ros-msgs
+  - ros-melodic-xgc2-ros-msgs
   packages:
-  - ros-noetic-xgc2-state-machine-msgs
-  - ros-noetic-xgc2-estimator-hover-thrust-msgs
-  - ros-noetic-xgc2-estimator-rigid-state-msgs
-  - ros-noetic-xgc2-multirotor-reference-trajectory-msgs
-  - ros-noetic-xgc2-px4-multirotor-controller-msgs
-  - ros-noetic-xgc2-unicycle-reference-trajectory-msgs
-  - ros-noetic-xgc2-ros-msgs
+  - ros-melodic-xgc2-state-machine-msgs
+  - ros-melodic-xgc2-estimator-hover-thrust-msgs
+  - ros-melodic-xgc2-estimator-rigid-state-msgs
+  - ros-melodic-xgc2-multirotor-reference-trajectory-msgs
+  - ros-melodic-xgc2-px4-multirotor-controller-msgs
+  - ros-melodic-xgc2-unicycle-reference-trajectory-msgs
+  - ros-melodic-xgc2-ros-msgs
   depends:
-  - ros-noetic-message-runtime
-  - ros-noetic-std-msgs
-  - ros-noetic-geometry-msgs
+  - ros-melodic-message-runtime
+  - ros-melodic-std-msgs
+  - ros-melodic-geometry-msgs
 usage:
   install: 'sudo apt update
 
-    sudo apt install ros-noetic-xgc2-ros-msgs
+    sudo apt install ros-melodic-xgc2-ros-msgs
 
     '
   smoke_test: 'rospack find state_machine_msgs
@@ -44,9 +44,9 @@ usage:
     '
 ownership:
   paths:
-  - /opt/ros/noetic/share/state_machine_msgs
-  - /opt/ros/noetic/share/hover_thrust_estimator_msgs
-  - /opt/ros/noetic/share/rigid_state_estimator_msgs
-  - /opt/ros/noetic/share/multirotor_reference_trajectory_msgs
-  - /opt/ros/noetic/share/px4_multirotor_controller_msgs
-  - /opt/ros/noetic/share/unicycle_reference_trajectory_msgs
+  - /opt/ros/melodic/share/state_machine_msgs
+  - /opt/ros/melodic/share/hover_thrust_estimator_msgs
+  - /opt/ros/melodic/share/rigid_state_estimator_msgs
+  - /opt/ros/melodic/share/multirotor_reference_trajectory_msgs
+  - /opt/ros/melodic/share/px4_multirotor_controller_msgs
+  - /opt/ros/melodic/share/unicycle_reference_trajectory_msgs

@@ -3,7 +3,7 @@ set -euo pipefail
 
 INSTALL_ROOT=""
 OUTPUT_DIR=""
-ROS_DISTRO="${ROS_DISTRO:-noetic}"
+ROS_DISTRO="${ROS_DISTRO:-melodic}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
@@ -107,6 +107,7 @@ copy_ros_package() {
   copy_path "${PREFIX_ROOT}/share/${ros_package}" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/include/${ros_package}" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/lib/pkgconfig/${ros_package}.pc" "${pkg_root}"
+  copy_path "${PREFIX_ROOT}/lib/python2.7/dist-packages/${ros_package}" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/lib/python3/dist-packages/${ros_package}" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/share/gennodejs/ros/${ros_package}" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/share/common-lisp/ros/${ros_package}" "${pkg_root}"

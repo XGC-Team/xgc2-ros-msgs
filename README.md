@@ -1,6 +1,6 @@
 # XGC2 ROS1 Messages
 
-Shared ROS1 message interfaces for XGC2 Noetic packages.
+Shared ROS1 message interfaces for XGC2 Melodic packages.
 
 This repository owns interface-only packages. Implementation packages should
 depend on these packages when they only need a topic contract.
@@ -19,22 +19,22 @@ depend on these packages when they only need a topic contract.
 The release workflow publishes one Debian package per ROS package, plus an
 aggregate package:
 
-- `ros-noetic-xgc2-state-machine-msgs`
-- `ros-noetic-xgc2-estimator-hover-thrust-msgs`
-- `ros-noetic-xgc2-estimator-rigid-state-msgs`
-- `ros-noetic-xgc2-multirotor-reference-trajectory-msgs`
-- `ros-noetic-xgc2-px4-multirotor-controller-msgs`
-- `ros-noetic-xgc2-unicycle-reference-trajectory-msgs`
-- `ros-noetic-xgc2-ros-msgs`
+- `ros-melodic-xgc2-state-machine-msgs`
+- `ros-melodic-xgc2-estimator-hover-thrust-msgs`
+- `ros-melodic-xgc2-estimator-rigid-state-msgs`
+- `ros-melodic-xgc2-multirotor-reference-trajectory-msgs`
+- `ros-melodic-xgc2-px4-multirotor-controller-msgs`
+- `ros-melodic-xgc2-unicycle-reference-trajectory-msgs`
+- `ros-melodic-xgc2-ros-msgs`
 
 Use the smallest specific package when a consumer only needs one interface
-family. Use `ros-noetic-xgc2-ros-msgs` when a workspace wants all shared XGC2
+family. Use `ros-melodic-xgc2-ros-msgs` when a workspace wants all shared XGC2
 ROS1 interfaces.
 
 ## Build
 
 ```bash
-source /opt/ros/noetic/setup.bash
+source /opt/ros/melodic/setup.bash
 mkdir -p /tmp/xgc2-ros-msgs-ws/src
 rsync -a . /tmp/xgc2-ros-msgs-ws/src/xgc2-ros-msgs
 cd /tmp/xgc2-ros-msgs-ws

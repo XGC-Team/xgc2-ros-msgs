@@ -3,7 +3,7 @@ name: ci
 on:
   push:
     branches:
-      - noetic
+      - melodic
   pull_request:
   workflow_dispatch:
 
@@ -15,7 +15,7 @@ jobs:
   package-compliance:
     name: Package compliance
     runs-on: ubuntu-latest
-    container: ros:noetic-ros-base-focal
+    container: ros:melodic-ros-base-bionic
     steps:
       - name: Install checkout dependencies
         run: |
@@ -34,12 +34,12 @@ jobs:
             cmake \
             git \
             rsync \
-            ros-noetic-geometry-msgs \
-            ros-noetic-message-generation \
-            ros-noetic-roslaunch \
-            ros-noetic-rosmsg \
-            ros-noetic-rospack \
-            ros-noetic-std-msgs
+            ros-melodic-geometry-msgs \
+            ros-melodic-message-generation \
+            ros-melodic-roslaunch \
+            ros-melodic-rosmsg \
+            ros-melodic-rospack \
+            ros-melodic-std-msgs
 
       - name: Build and inspect messages
         run: |
@@ -55,11 +55,11 @@ jobs:
 
           cd "$work_dir"
           set +u
-          source /opt/ros/noetic/setup.bash
+          source /opt/ros/melodic/setup.bash
           set -u
           catkin_make
           DESTDIR="$install_root" catkin_make install \
-            -DCMAKE_INSTALL_PREFIX=/opt/ros/noetic \
+            -DCMAKE_INSTALL_PREFIX=/opt/ros/melodic \
             -DCMAKE_BUILD_TYPE=Release
           set +u
           source devel/setup.bash
