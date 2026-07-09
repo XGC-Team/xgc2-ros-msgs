@@ -52,10 +52,14 @@ deb_depends_for_ros_package() {
 }
 
 product_version() {
-  awk -F': *' '/^version:[[:space:]]*/ {print $2; exit}' "${REPO_ROOT}/.xgc2/product.yml"
+  sed -n 's/^version:[[:space:]]*//p' "${REPO_ROOT}/.xgc2/product.yml" | head -n 1
 }
 
 VERSION="${PACKAGE_VERSION:-$(product_version)}"
+if [[ -z "${VERSION}" ]]; then
+  echo "package version is missing; set PACKAGE_VERSION or .xgc2/product.yml version" >&2
+  exit 1
+fi
 
 while [[ $# -gt 0 ]]; do
   case "$1" in

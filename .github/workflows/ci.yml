@@ -15,67 +15,65 @@ jobs:
   package-compliance:
     name: Package compliance
     runs-on: ubuntu-latest
-    container: ros:melodic-ros-base-bionic
     steps:
-      - name: Install checkout dependencies
-        run: |
-          export DEBIAN_FRONTEND=noninteractive
-          apt-get update
-          apt-get install -y --no-install-recommends ca-certificates git
-
       - uses: actions/checkout@v4
 
-      - name: Install build dependencies
+      - name: Build and inspect messages in Docker
         run: |
-          export DEBIAN_FRONTEND=noninteractive
-          apt-get update
-          apt-get install -y --no-install-recommends \
-            build-essential \
-            cmake \
-            git \
-            rsync \
-            ros-melodic-geometry-msgs \
-            ros-melodic-message-generation \
-            ros-melodic-roslaunch \
-            ros-melodic-rosmsg \
-            ros-melodic-rospack \
-            ros-melodic-std-msgs
-
-      - name: Build and inspect messages
-        run: |
-          set -euo pipefail
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git diff --check HEAD
+          docker pull ros:melodic-ros-base-bionic
+          docker run --rm \
+            -e DEBIAN_FRONTEND=noninteractive \
+            -v "$GITHUB_WORKSPACE:/workspace/ros1-msgs:ro" \
+            -v "$RUNNER_TEMP:/workspace/tmp" \
+            ros:melodic-ros-base-bionic \
+            bash -lc '
+              set -euo pipefail
+              export DEBIAN_FRONTEND=noninteractive
+              apt-get update
+              apt-get install -y --no-install-recommends \
+                build-essential \
+                cmake \
+                git \
+                rsync \
+                ros-melodic-geometry-msgs \
+                ros-melodic-message-generation \
+                ros-melodic-roslaunch \
+                ros-melodic-rosmsg \
+                ros-melodic-rospack \
+                ros-melodic-std-msgs
 
-          work_dir="${RUNNER_TEMP}/ros1-msgs-compliance"
-          install_root="${RUNNER_TEMP}/ros1-msgs-install-root"
-          rm -rf "$work_dir" "$install_root"
-          mkdir -p "$work_dir/src/ros1-msgs"
-          rsync -a --delete "$GITHUB_WORKSPACE/" "$work_dir/src/ros1-msgs/"
+              work_dir="/workspace/tmp/ros1-msgs-compliance"
+              install_root="/workspace/tmp/ros1-msgs-install-root"
+              rm -rf "$work_dir" "$install_root"
+              mkdir -p "$work_dir/src/ros1-msgs"
+              rsync -a --delete /workspace/ros1-msgs/ "$work_dir/src/ros1-msgs/"
 
-          cd "$work_dir"
-          set +u
-          source /opt/ros/melodic/setup.bash
-          set -u
-          catkin_make
-          DESTDIR="$install_root" catkin_make install \
-            -DCMAKE_INSTALL_PREFIX=/opt/ros/melodic \
-            -DCMAKE_BUILD_TYPE=Release
-          set +u
-          source devel/setup.bash
-          set -u
-          test "$(rospack find state_machine_msgs)" = "$work_dir/src/ros1-msgs/state_machine_msgs"
-          test "$(rospack find hover_thrust_estimator_msgs)" = "$work_dir/src/ros1-msgs/hover_thrust_estimator_msgs"
-          test "$(rospack find rigid_state_estimator_msgs)" = "$work_dir/src/ros1-msgs/rigid_state_estimator_msgs"
-          test "$(rospack find multirotor_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/multirotor_reference_trajectory_msgs"
-          test "$(rospack find px4_multirotor_controller_msgs)" = "$work_dir/src/ros1-msgs/px4_multirotor_controller_msgs"
-          test "$(rospack find unicycle_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/unicycle_reference_trajectory_msgs"
-          rosmsg show state_machine_msgs/StateMachineTrace | grep -q '^uint64 update_index$'
-          rosmsg show hover_thrust_estimator_msgs/HoverThrustEstimate | grep -q '^float64 hover_thrust$'
-          rosmsg show rigid_state_estimator_msgs/RigidStateEstimate | grep -q '^uint8 estimator_state$'
-          rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q '^multirotor_reference_trajectory_msgs/FlatReferencePoint\[\] points$'
-          rosmsg show px4_multirotor_controller_msgs/NmpcDebugSample | grep -q '^float64 hover_thrust$'
-          rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q '^unicycle_reference_trajectory_msgs/PlanarReferencePoint\[\] points$'
+              cd "$work_dir"
+              set +u
+              source /opt/ros/melodic/setup.bash
+              set -u
+              catkin_make
+              DESTDIR="$install_root" catkin_make install \
+                -DCMAKE_INSTALL_PREFIX=/opt/ros/melodic \
+                -DCMAKE_BUILD_TYPE=Release
+              set +u
+              source devel/setup.bash
+              set -u
+              test "$(rospack find state_machine_msgs)" = "$work_dir/src/ros1-msgs/state_machine_msgs"
+              test "$(rospack find hover_thrust_estimator_msgs)" = "$work_dir/src/ros1-msgs/hover_thrust_estimator_msgs"
+              test "$(rospack find rigid_state_estimator_msgs)" = "$work_dir/src/ros1-msgs/rigid_state_estimator_msgs"
+              test "$(rospack find multirotor_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/multirotor_reference_trajectory_msgs"
+              test "$(rospack find px4_multirotor_controller_msgs)" = "$work_dir/src/ros1-msgs/px4_multirotor_controller_msgs"
+              test "$(rospack find unicycle_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/unicycle_reference_trajectory_msgs"
+              rosmsg show state_machine_msgs/StateMachineTrace | grep -q "^uint64 update_index$"
+              rosmsg show hover_thrust_estimator_msgs/HoverThrustEstimate | grep -q "^float64 hover_thrust$"
+              rosmsg show rigid_state_estimator_msgs/RigidStateEstimate | grep -q "^uint8 estimator_state$"
+              rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q "^multirotor_reference_trajectory_msgs/FlatReferencePoint\[\] points$"
+              rosmsg show px4_multirotor_controller_msgs/NmpcDebugSample | grep -q "^float64 hover_thrust$"
+              rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q "^unicycle_reference_trajectory_msgs/PlanarReferencePoint\[\] points$"
+            '
 
   build-debs:
     name: Build debs (${{ matrix.arch }})

@@ -33,7 +33,7 @@ rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q '^mu
 rosmsg show px4_multirotor_controller_msgs/NmpcDebugSample | grep -q '^float64 hover_thrust$'
 rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q '^unicycle_reference_trajectory_msgs/PlanarReferencePoint\[\] points$'
 
-python3 - <<'PY'
+python - <<'PY'
 from hover_thrust_estimator_msgs.msg import HoverThrustEstimate
 from multirotor_reference_trajectory_msgs.msg import AnalyticReference as UavAnalytic
 from rigid_state_estimator_msgs.msg import PlanarStateEstimate, RigidStateEstimate
