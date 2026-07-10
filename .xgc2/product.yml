@@ -1,7 +1,7 @@
 schema: xgc2.product.v1
 id: xgc2-ros-msgs
 name: XGC2 ROS1 Messages
-version: 1.2.0-2
+version: 1.2.0-3
 kind: ros1-apt
 summary: Shared ROS1 message interfaces for XGC2 components.
 ros:
