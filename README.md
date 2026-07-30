@@ -7,6 +7,7 @@ depend on these packages when they only need a topic contract.
 
 ## Packages
 
+- `xgc_camera_msgs`: encoded H264 frame timing, epoch, and stream metadata
 - `state_machine_msgs`
 - `hover_thrust_estimator_msgs`
 - `rigid_state_estimator_msgs`
@@ -19,6 +20,7 @@ depend on these packages when they only need a topic contract.
 The release workflow publishes one Debian package per ROS package, plus an
 aggregate package:
 
+- `ros-noetic-xgc2-camera-msgs`
 - `ros-noetic-xgc2-state-machine-msgs`
 - `ros-noetic-xgc2-estimator-hover-thrust-msgs`
 - `ros-noetic-xgc2-estimator-rigid-state-msgs`
@@ -30,6 +32,26 @@ aggregate package:
 Use the smallest specific package when a consumer only needs one interface
 family. Use `ros-noetic-xgc2-ros-msgs` when a workspace wants all shared XGC2
 ROS1 interfaces.
+
+## Encoded camera contract
+
+`FrameTiming` accompanies every encoded frame. Its source timestamp and frame
+ID exactly match the associated `foxglove_msgs/CompressedVideo` fields or
+`sensor_msgs/CompressedImage` header. The `(stream_id, epoch, frame_sequence)`
+tuple identifies the published frame; `source_sequence` independently preserves
+the device or simulator sequence.
+
+The native source time, its clock-to-ROS offset and uncertainty, dequeue time,
+and host publication time are separate fields. A driver with no defensible
+clock mapping must set `source_time_valid=false`; it must not substitute
+arrival or publication time as if that were capture time.
+
+`StreamInfo` is latched and republished whenever the epoch or stream
+configuration changes. It describes H264 Annex-B and MJPEG/JPEG sources, ROS
+encoded transports and RTP, the source clock domain, timestamp reference,
+dimensions, nominal rate, bitrate, GOP, and producer queue capacity. Epochs are
+opaque non-zero tokens and change at every decoder-reference or source-time
+discontinuity.
 
 ## Build
 

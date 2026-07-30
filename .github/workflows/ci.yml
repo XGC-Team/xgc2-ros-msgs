@@ -65,12 +65,17 @@ jobs:
           source devel/setup.bash
           set -u
           test "$(rospack find state_machine_msgs)" = "$work_dir/src/ros1-msgs/state_machine_msgs"
+          test "$(rospack find xgc_camera_msgs)" = "$work_dir/src/ros1-msgs/xgc_camera_msgs"
           test "$(rospack find hover_thrust_estimator_msgs)" = "$work_dir/src/ros1-msgs/hover_thrust_estimator_msgs"
           test "$(rospack find rigid_state_estimator_msgs)" = "$work_dir/src/ros1-msgs/rigid_state_estimator_msgs"
           test "$(rospack find multirotor_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/multirotor_reference_trajectory_msgs"
           test "$(rospack find px4_multirotor_controller_msgs)" = "$work_dir/src/ros1-msgs/px4_multirotor_controller_msgs"
           test "$(rospack find unicycle_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/unicycle_reference_trajectory_msgs"
           rosmsg show state_machine_msgs/StateMachineTrace | grep -q '^uint64 update_index$'
+          rosmsg show xgc_camera_msgs/FrameTiming | grep -q '^uint64 epoch$'
+          rosmsg show xgc_camera_msgs/FrameTiming | grep -q '^int64 native_source_time_ns$'
+          rosmsg show xgc_camera_msgs/FrameTiming | grep -q '^uint64 mapping_uncertainty_ns$'
+          rosmsg show xgc_camera_msgs/StreamInfo | grep -q '^uint32 publisher_queue_capacity$'
           rosmsg show hover_thrust_estimator_msgs/HoverThrustEstimate | grep -q '^float64 hover_thrust$'
           rosmsg show rigid_state_estimator_msgs/RigidStateEstimate | grep -q '^uint8 estimator_state$'
           rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q '^multirotor_reference_trajectory_msgs/FlatReferencePoint\[\] points$'

@@ -8,6 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 ROS_PACKAGES=(
+  xgc_camera_msgs
   state_machine_msgs
   hover_thrust_estimator_msgs
   rigid_state_estimator_msgs
@@ -18,6 +19,7 @@ ROS_PACKAGES=(
 
 deb_package_for_ros_package() {
   case "$1" in
+    xgc_camera_msgs) echo "ros-${ROS_DISTRO}-xgc2-camera-msgs" ;;
     state_machine_msgs) echo "ros-${ROS_DISTRO}-xgc2-state-machine-msgs" ;;
     hover_thrust_estimator_msgs) echo "ros-${ROS_DISTRO}-xgc2-estimator-hover-thrust-msgs" ;;
     rigid_state_estimator_msgs) echo "ros-${ROS_DISTRO}-xgc2-estimator-rigid-state-msgs" ;;
@@ -30,6 +32,7 @@ deb_package_for_ros_package() {
 
 deb_description_for_ros_package() {
   case "$1" in
+    xgc_camera_msgs) echo "XGC2 encoded-camera timing and stream metadata interfaces" ;;
     state_machine_msgs) echo "XGC2 generic state-machine trace message interfaces" ;;
     hover_thrust_estimator_msgs) echo "XGC2 hover thrust estimator message interfaces" ;;
     rigid_state_estimator_msgs) echo "XGC2 rigid state estimator message interfaces" ;;
@@ -42,7 +45,7 @@ deb_description_for_ros_package() {
 
 deb_depends_for_ros_package() {
   case "$1" in
-    state_machine_msgs|hover_thrust_estimator_msgs)
+    xgc_camera_msgs|state_machine_msgs|hover_thrust_estimator_msgs)
       echo "ros-${ROS_DISTRO}-message-runtime, ros-${ROS_DISTRO}-std-msgs"
       ;;
     *)

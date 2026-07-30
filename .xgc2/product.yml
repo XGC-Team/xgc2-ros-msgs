@@ -7,6 +7,7 @@ summary: Shared ROS1 message interfaces for XGC2 components.
 ros:
   distro: noetic
   packages:
+  - xgc_camera_msgs
   - state_machine_msgs
   - hover_thrust_estimator_msgs
   - rigid_state_estimator_msgs
@@ -18,6 +19,7 @@ apt:
   install:
   - ros-noetic-xgc2-ros-msgs
   packages:
+  - ros-noetic-xgc2-camera-msgs
   - ros-noetic-xgc2-state-machine-msgs
   - ros-noetic-xgc2-estimator-hover-thrust-msgs
   - ros-noetic-xgc2-estimator-rigid-state-msgs
@@ -37,6 +39,8 @@ usage:
     '
   smoke_test: 'rospack find state_machine_msgs
 
+    rospack find xgc_camera_msgs
+
     rospack find hover_thrust_estimator_msgs
 
     rospack find rigid_state_estimator_msgs
@@ -44,6 +48,7 @@ usage:
     '
 ownership:
   paths:
+  - /opt/ros/noetic/share/xgc_camera_msgs
   - /opt/ros/noetic/share/state_machine_msgs
   - /opt/ros/noetic/share/hover_thrust_estimator_msgs
   - /opt/ros/noetic/share/rigid_state_estimator_msgs
