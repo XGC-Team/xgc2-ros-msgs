@@ -15,72 +15,58 @@ jobs:
   package-compliance:
     name: Package compliance
     runs-on: ubuntu-latest
-    container: ros:noetic-ros-base-focal
     steps:
-      - name: Install checkout dependencies
-        run: |
-          export DEBIAN_FRONTEND=noninteractive
-          apt-get update
-          apt-get install -y --no-install-recommends ca-certificates git
-
       - uses: actions/checkout@v4
-
-      - name: Install build dependencies
-        run: |
-          export DEBIAN_FRONTEND=noninteractive
-          apt-get update
-          apt-get install -y --no-install-recommends \
-            build-essential \
-            cmake \
-            git \
-            rsync \
-            ros-noetic-geometry-msgs \
-            ros-noetic-message-generation \
-            ros-noetic-roslaunch \
-            ros-noetic-rosmsg \
-            ros-noetic-rospack \
-            ros-noetic-std-msgs
 
       - name: Build and inspect messages
         run: |
           set -euo pipefail
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git diff --check HEAD
-
-          work_dir="${RUNNER_TEMP}/ros1-msgs-compliance"
-          install_root="${RUNNER_TEMP}/ros1-msgs-install-root"
-          rm -rf "$work_dir" "$install_root"
-          mkdir -p "$work_dir/src/ros1-msgs"
-          rsync -a --delete "$GITHUB_WORKSPACE/" "$work_dir/src/ros1-msgs/"
-
-          cd "$work_dir"
-          set +u
-          source /opt/ros/noetic/setup.bash
-          set -u
-          catkin_make
-          DESTDIR="$install_root" catkin_make install \
-            -DCMAKE_INSTALL_PREFIX=/opt/ros/noetic \
-            -DCMAKE_BUILD_TYPE=Release
-          set +u
-          source devel/setup.bash
-          set -u
-          test "$(rospack find state_machine_msgs)" = "$work_dir/src/ros1-msgs/state_machine_msgs"
-          test "$(rospack find xgc_camera_msgs)" = "$work_dir/src/ros1-msgs/xgc_camera_msgs"
-          test "$(rospack find hover_thrust_estimator_msgs)" = "$work_dir/src/ros1-msgs/hover_thrust_estimator_msgs"
-          test "$(rospack find rigid_state_estimator_msgs)" = "$work_dir/src/ros1-msgs/rigid_state_estimator_msgs"
-          test "$(rospack find multirotor_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/multirotor_reference_trajectory_msgs"
-          test "$(rospack find px4_multirotor_controller_msgs)" = "$work_dir/src/ros1-msgs/px4_multirotor_controller_msgs"
-          test "$(rospack find unicycle_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/unicycle_reference_trajectory_msgs"
-          rosmsg show state_machine_msgs/StateMachineTrace | grep -q '^uint64 update_index$'
-          rosmsg show xgc_camera_msgs/FrameTiming | grep -q '^uint64 epoch$'
-          rosmsg show xgc_camera_msgs/FrameTiming | grep -q '^int64 native_source_time_ns$'
-          rosmsg show xgc_camera_msgs/FrameTiming | grep -q '^uint64 mapping_uncertainty_ns$'
-          rosmsg show xgc_camera_msgs/StreamInfo | grep -q '^uint32 publisher_queue_capacity$'
-          rosmsg show hover_thrust_estimator_msgs/HoverThrustEstimate | grep -q '^float64 hover_thrust$'
-          rosmsg show rigid_state_estimator_msgs/RigidStateEstimate | grep -q '^uint8 estimator_state$'
-          rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q '^multirotor_reference_trajectory_msgs/FlatReferencePoint\[\] points$'
-          rosmsg show px4_multirotor_controller_msgs/NmpcDebugSample | grep -q '^float64 hover_thrust$'
-          rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q '^unicycle_reference_trajectory_msgs/PlanarReferencePoint\[\] points$'
+          docker pull ghcr.io/xgc-team/xgc2-images/xgc2-build-focal-ros-noetic:1.0.0
+          docker run --rm --network none \
+            -e XGC2_BUILD_UID="$(id -u)" \
+            -e XGC2_BUILD_GID="$(id -g)" \
+            -v "$GITHUB_WORKSPACE:/workspace/ros1-msgs:ro" \
+            -v "$RUNNER_TEMP/ros1-msgs-compliance:/workspace/work" \
+            ghcr.io/xgc-team/xgc2-images/xgc2-build-focal-ros-noetic:1.0.0 \
+            bash -lc '
+              set -euo pipefail
+              for pkg in cmake ros-noetic-geometry-msgs ros-noetic-message-generation \
+                ros-noetic-rosmsg ros-noetic-rospack ros-noetic-std-msgs
+              do
+                dpkg -s "${pkg}" >/dev/null
+              done
+              rm -rf /workspace/work/src /workspace/work/build /workspace/work/devel
+              mkdir -p /workspace/work/src/ros1-msgs
+              rsync -a --delete --exclude .git --exclude .work --exclude debs \
+                /workspace/ros1-msgs/ /workspace/work/src/ros1-msgs/
+              cd /workspace/work
+              set +u
+              source /opt/ros/noetic/setup.bash
+              set -u
+              catkin_make
+              set +u
+              source devel/setup.bash
+              set -u
+              work_dir=/workspace/work
+              test "$(rospack find state_machine_msgs)" = "$work_dir/src/ros1-msgs/state_machine_msgs"
+              test "$(rospack find xgc_camera_msgs)" = "$work_dir/src/ros1-msgs/xgc_camera_msgs"
+              test "$(rospack find hover_thrust_estimator_msgs)" = "$work_dir/src/ros1-msgs/hover_thrust_estimator_msgs"
+              test "$(rospack find rigid_state_estimator_msgs)" = "$work_dir/src/ros1-msgs/rigid_state_estimator_msgs"
+              test "$(rospack find multirotor_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/multirotor_reference_trajectory_msgs"
+              test "$(rospack find px4_multirotor_controller_msgs)" = "$work_dir/src/ros1-msgs/px4_multirotor_controller_msgs"
+              test "$(rospack find unicycle_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/unicycle_reference_trajectory_msgs"
+              rosmsg show state_machine_msgs/StateMachineTrace | grep -q "^uint64 update_index$"
+              rosmsg show xgc_camera_msgs/FrameTiming | grep -q "^uint64 epoch$"
+              rosmsg show xgc_camera_msgs/FrameTiming | grep -q "^int64 native_source_time_ns$"
+              rosmsg show xgc_camera_msgs/FrameTiming | grep -q "^uint64 mapping_uncertainty_ns$"
+              rosmsg show xgc_camera_msgs/StreamInfo | grep -q "^uint32 publisher_queue_capacity$"
+              rosmsg show hover_thrust_estimator_msgs/HoverThrustEstimate | grep -q "^float64 hover_thrust$"
+              rosmsg show rigid_state_estimator_msgs/RigidStateEstimate | grep -q "^uint8 estimator_state$"
+              rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q "^multirotor_reference_trajectory_msgs/FlatReferencePoint\\[\\] points$"
+              rosmsg show px4_multirotor_controller_msgs/NmpcDebugSample | grep -q "^float64 hover_thrust$"
+              rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q "^unicycle_reference_trajectory_msgs/PlanarReferencePoint\\[\\] points$"
+            '
 
   build-debs:
     name: Build debs (${{ matrix.arch }})
