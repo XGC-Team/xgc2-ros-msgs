@@ -17,6 +17,10 @@ while [[ $# -gt 0 ]]; do
     --output-dir) OUTPUT_DIR="$2"; shift 2 ;;
     --skip-install-check) INSTALL_CHECK=false; shift ;;
     --network) shift 2 ;;
+    --platform)
+      DOCKER_PLATFORM="$2"
+      shift 2
+      ;;
     *)
       echo "unknown argument: $1" >&2
       exit 1
@@ -26,8 +30,14 @@ done
 
 mkdir -p "${WORK_DIR}" "${OUTPUT_DIR}"
 
-docker pull "${DOCKER_IMAGE}"
+docker_platform_args=()
+if [[ -n "${DOCKER_PLATFORM:-}" ]]; then
+  docker_platform_args=(--platform "${DOCKER_PLATFORM}")
+fi
+
+docker pull "${docker_platform_args[@]}" "${DOCKER_IMAGE}"
 docker run --rm --network none \
+  "${docker_platform_args[@]}" \
   -e XGC2_BUILD_GID="$(id -g)" \
   -e XGC2_BUILD_UID="$(id -u)" \
   -e DEBIAN_FRONTEND=noninteractive \
@@ -41,17 +51,18 @@ docker run --rm --network none \
     trap '\''build_status=$?; chown -R "${XGC2_BUILD_UID}:${XGC2_BUILD_GID}" /workspace/work /workspace/out; exit "${build_status}"'\'' EXIT
 
     export DEBIAN_FRONTEND=noninteractive
+    : "${ROS_DISTRO:?ROS_DISTRO must be set in the image}"
     for pkg in \
       cmake fakeroot dpkg-dev \
-      ros-noetic-geometry-msgs \
-      ros-noetic-message-generation \
-      ros-noetic-roslaunch \
-      ros-noetic-rosmsg \
-      ros-noetic-rospack \
-      ros-noetic-std-msgs
+      "ros-${ROS_DISTRO}-geometry-msgs" \
+      "ros-${ROS_DISTRO}-message-generation" \
+      "ros-${ROS_DISTRO}-roslaunch" \
+      "ros-${ROS_DISTRO}-rosmsg" \
+      "ros-${ROS_DISTRO}-rospack" \
+      "ros-${ROS_DISTRO}-std-msgs"
     do
       if ! dpkg -s "${pkg}" >/dev/null 2>&1; then
-        echo "image is missing ${pkg}; use xgc2-build-focal-ros-noetic" >&2
+        echo "image is missing ${pkg}" >&2
         exit 1
       fi
     done
@@ -64,10 +75,10 @@ docker run --rm --network none \
 
     cd /workspace/work
     set +u
-    source /opt/ros/noetic/setup.bash
+    source /opt/ros/${ROS_DISTRO}/setup.bash
     set -u
     DESTDIR=/workspace/work/install-root catkin_make install \
-      -DCMAKE_INSTALL_PREFIX=/opt/ros/noetic \
+      -DCMAKE_INSTALL_PREFIX=/opt/ros/${ROS_DISTRO} \
       -DCMAKE_BUILD_TYPE=Release
 
     /workspace/ros1-msgs/.xgc2/scripts/package_debs.sh \

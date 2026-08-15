@@ -1,11 +1,11 @@
 schema: xgc2.product.v1
 id: xgc2-ros-msgs
 name: XGC2 ROS1 Messages
-version: 1.2.0-10
+version: 1.2.0-11
 kind: ros1-apt
 summary: Shared ROS1 message interfaces for XGC2 components.
 ros:
-  distro: noetic
+  distro: melodic,noetic
   packages:
   - xgc_camera_msgs
   - state_machine_msgs
@@ -15,10 +15,18 @@ ros:
   - px4_multirotor_controller_msgs
   - unicycle_reference_trajectory_msgs
 apt:
-  distribution: focal
+  distribution: bionic,focal
   install:
   - ros-noetic-xgc2-ros-msgs
   packages:
+  - ros-melodic-xgc2-camera-msgs
+  - ros-melodic-xgc2-state-machine-msgs
+  - ros-melodic-xgc2-estimator-hover-thrust-msgs
+  - ros-melodic-xgc2-estimator-rigid-state-msgs
+  - ros-melodic-xgc2-multirotor-reference-trajectory-msgs
+  - ros-melodic-xgc2-px4-multirotor-controller-msgs
+  - ros-melodic-xgc2-unicycle-reference-trajectory-msgs
+  - ros-melodic-xgc2-ros-msgs
   - ros-noetic-xgc2-camera-msgs
   - ros-noetic-xgc2-state-machine-msgs
   - ros-noetic-xgc2-estimator-hover-thrust-msgs
@@ -57,4 +65,5 @@ ownership:
   - /opt/ros/noetic/share/unicycle_reference_trajectory_msgs
 release:
   apt_versions:
-    focal: 1.2.0-10
+    bionic: 1.2.0-11
+    focal: 1.2.0-11

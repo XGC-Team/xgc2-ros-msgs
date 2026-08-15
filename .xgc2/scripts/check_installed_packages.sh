@@ -8,14 +8,14 @@ source "/opt/ros/${ROS_DISTRO}/setup.bash"
 set -u
 
 for package in \
-  ros-noetic-xgc2-camera-msgs \
-  ros-noetic-xgc2-state-machine-msgs \
-  ros-noetic-xgc2-estimator-hover-thrust-msgs \
-  ros-noetic-xgc2-estimator-rigid-state-msgs \
-  ros-noetic-xgc2-multirotor-reference-trajectory-msgs \
-  ros-noetic-xgc2-px4-multirotor-controller-msgs \
-  ros-noetic-xgc2-unicycle-reference-trajectory-msgs \
-  ros-noetic-xgc2-ros-msgs; do
+  "ros-${ROS_DISTRO}-xgc2-camera-msgs" \
+  "ros-${ROS_DISTRO}-xgc2-state-machine-msgs" \
+  "ros-${ROS_DISTRO}-xgc2-estimator-hover-thrust-msgs" \
+  "ros-${ROS_DISTRO}-xgc2-estimator-rigid-state-msgs" \
+  "ros-${ROS_DISTRO}-xgc2-multirotor-reference-trajectory-msgs" \
+  "ros-${ROS_DISTRO}-xgc2-px4-multirotor-controller-msgs" \
+  "ros-${ROS_DISTRO}-xgc2-unicycle-reference-trajectory-msgs" \
+  "ros-${ROS_DISTRO}-xgc2-ros-msgs"; do
   dpkg -s "${package}" >/dev/null
 done
 
@@ -40,7 +40,11 @@ rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q '^mu
 rosmsg show px4_multirotor_controller_msgs/NmpcDebugSample | grep -q '^float64 hover_thrust$'
 rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q '^unicycle_reference_trajectory_msgs/PlanarReferencePoint\[\] points$'
 
-python3 - <<'PY'
+msg_python="python3"
+if [[ "${ROS_DISTRO}" == "melodic" ]]; then
+  msg_python="python2"
+fi
+"${msg_python}" - <<'PY'
 from hover_thrust_estimator_msgs.msg import HoverThrustEstimate
 from multirotor_reference_trajectory_msgs.msg import AnalyticReference as UavAnalytic
 from rigid_state_estimator_msgs.msg import PlanarStateEstimate, RigidStateEstimate

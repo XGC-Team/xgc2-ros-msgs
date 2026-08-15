@@ -55,10 +55,15 @@ deb_depends_for_ros_package() {
 }
 
 product_version() {
-  awk -F': *' '/^version:[[:space:]]*/ {print $2; exit}' "${REPO_ROOT}/.xgc2/product.yml"
+  # mawk (bionic) does not implement POSIX [[:space:]].
+  awk '/^version:/ {print $2; exit}' "${REPO_ROOT}/.xgc2/product.yml"
 }
 
 VERSION="${PACKAGE_VERSION:-$(product_version)}"
+if [[ -z "${VERSION}" ]]; then
+  echo "package version is missing; set PACKAGE_VERSION or .xgc2/product.yml version" >&2
+  exit 1
+fi
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -111,6 +116,7 @@ copy_ros_package() {
   copy_path "${PREFIX_ROOT}/include/${ros_package}" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/lib/pkgconfig/${ros_package}.pc" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/lib/python3/dist-packages/${ros_package}" "${pkg_root}"
+  copy_path "${PREFIX_ROOT}/lib/python2.7/dist-packages/${ros_package}" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/share/gennodejs/ros/${ros_package}" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/share/common-lisp/ros/${ros_package}" "${pkg_root}"
   copy_path "${PREFIX_ROOT}/share/roseus/ros/${ros_package}" "${pkg_root}"
