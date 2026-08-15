@@ -17,6 +17,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+  build-debs:
+    name: Build debs (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
 
       - name: Build and inspect messages
         run: |
@@ -68,19 +82,6 @@ jobs:
               rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q "^unicycle_reference_trajectory_msgs/PlanarReferencePoint\\[\\] points$"
             '
 
-  build-debs:
-    name: Build debs (${{ matrix.arch }})
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: amd64
-            runner: ubuntu-latest
-          - arch: arm64
-            runner: ubuntu-24.04-arm
-    runs-on: ${{ matrix.runner }}
-    steps:
-      - uses: actions/checkout@v4
 
       - name: Build and install-check deb package in Docker
         run: |
