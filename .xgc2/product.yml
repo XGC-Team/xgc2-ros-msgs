@@ -17,7 +17,41 @@ ros:
 apt:
   distribution: bionic,focal
   install:
+  - ros-melodic-xgc2-ros-msgs
   - ros-noetic-xgc2-ros-msgs
+  package_distributions:
+    ros-melodic-xgc2-camera-msgs:
+    - bionic
+    ros-melodic-xgc2-state-machine-msgs:
+    - bionic
+    ros-melodic-xgc2-estimator-hover-thrust-msgs:
+    - bionic
+    ros-melodic-xgc2-estimator-rigid-state-msgs:
+    - bionic
+    ros-melodic-xgc2-multirotor-reference-trajectory-msgs:
+    - bionic
+    ros-melodic-xgc2-px4-multirotor-controller-msgs:
+    - bionic
+    ros-melodic-xgc2-unicycle-reference-trajectory-msgs:
+    - bionic
+    ros-melodic-xgc2-ros-msgs:
+    - bionic
+    ros-noetic-xgc2-camera-msgs:
+    - focal
+    ros-noetic-xgc2-state-machine-msgs:
+    - focal
+    ros-noetic-xgc2-estimator-hover-thrust-msgs:
+    - focal
+    ros-noetic-xgc2-estimator-rigid-state-msgs:
+    - focal
+    ros-noetic-xgc2-multirotor-reference-trajectory-msgs:
+    - focal
+    ros-noetic-xgc2-px4-multirotor-controller-msgs:
+    - focal
+    ros-noetic-xgc2-unicycle-reference-trajectory-msgs:
+    - focal
+    ros-noetic-xgc2-ros-msgs:
+    - focal
   packages:
   - ros-melodic-xgc2-camera-msgs
   - ros-melodic-xgc2-state-machine-msgs
@@ -36,11 +70,16 @@ apt:
   - ros-noetic-xgc2-unicycle-reference-trajectory-msgs
   - ros-noetic-xgc2-ros-msgs
   depends:
+  - ros-melodic-message-runtime
+  - ros-melodic-std-msgs
+  - ros-melodic-geometry-msgs
   - ros-noetic-message-runtime
   - ros-noetic-std-msgs
   - ros-noetic-geometry-msgs
 usage:
   install: 'sudo apt update
+
+    sudo apt install ros-melodic-xgc2-ros-msgs
 
     sudo apt install ros-noetic-xgc2-ros-msgs
 
@@ -56,6 +95,13 @@ usage:
     '
 ownership:
   paths:
+  - /opt/ros/melodic/share/xgc_camera_msgs
+  - /opt/ros/melodic/share/state_machine_msgs
+  - /opt/ros/melodic/share/hover_thrust_estimator_msgs
+  - /opt/ros/melodic/share/rigid_state_estimator_msgs
+  - /opt/ros/melodic/share/multirotor_reference_trajectory_msgs
+  - /opt/ros/melodic/share/px4_multirotor_controller_msgs
+  - /opt/ros/melodic/share/unicycle_reference_trajectory_msgs
   - /opt/ros/noetic/share/xgc_camera_msgs
   - /opt/ros/noetic/share/state_machine_msgs
   - /opt/ros/noetic/share/hover_thrust_estimator_msgs
