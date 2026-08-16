@@ -65,5 +65,5 @@ ownership:
   - /opt/ros/noetic/share/unicycle_reference_trajectory_msgs
 release:
   apt_versions:
-    bionic: 1.2.0-11
-    focal: 1.2.0-11
+    bionic: 1.2.0-12
+    focal: 1.2.0-12
