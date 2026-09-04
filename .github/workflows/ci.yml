@@ -96,6 +96,8 @@ jobs:
               rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q "^multirotor_reference_trajectory_msgs/FlatReferencePoint\\[\\] points$"
               rosmsg show px4_multirotor_controller_msgs/NmpcDebugSample | grep -q "^float64 hover_thrust$"
               rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q "^unicycle_reference_trajectory_msgs/PlanarReferencePoint\\[\\] points$"
+              rosmsg show unicycle_reference_trajectory_msgs/PlanarPvaReference | grep -q "^float64 ax$"
+              rosmsg show unicycle_reference_trajectory_msgs/PlanarPvaReference | grep -q "^float64 ay$"
             '
 
 

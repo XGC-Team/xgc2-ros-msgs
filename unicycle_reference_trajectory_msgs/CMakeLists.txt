@@ -11,6 +11,7 @@ add_message_files(
   FILES
   ActivePolynomialReference.msg
   AnalyticReference.msg
+  PlanarPvaReference.msg
   PlanarReferencePoint.msg
   ReferenceStatus.msg
   SampledReference.msg
