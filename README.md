@@ -68,3 +68,16 @@ catkin_make
 ```bash
 .xgc2/scripts/build_debs_in_docker.sh --work-dir /tmp/xgc2-ros-msgs --output-dir ./debs
 ```
+
+## Reference trajectory contract (1.4)
+
+Multirotor references expose analytic and sampled inputs. The old waypoint
+planning request and external active polynomial messages are retired. Analytic
+circle/torus-knot entry, trajectory identity, timing and current enum values
+remain unchanged; retired enum slots are not reused.
+
+UGV waypoint references remain for TARE. `OBJECTIVE_SEPTIC_INTERPOLATION = 1`
+means fixed-time seventh-order boundary interpolation, with finite-difference
+interior velocities. Unsupported optimization and region constraint fields are
+removed. UGV `ActivePolynomialReference` and `PlanarPvaReference` remain.
+This is a ROS1 MD5 change: producers and consumers must use this contract together.

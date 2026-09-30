@@ -9,12 +9,10 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  ActivePolynomialReference.msg
   AnalyticReference.msg
   FlatReferencePoint.msg
   ReferenceStatus.msg
   SampledReference.msg
-  WaypointReferenceRequest.msg
 )
 
 generate_messages(
