@@ -62,4 +62,6 @@ trace = StateMachineTrace()
 trace.machine_name = "test"
 PY
 
+"$(dirname "${BASH_SOURCE[0]}")/check_scout_installed.sh"
+
 echo "Installed package check passed"

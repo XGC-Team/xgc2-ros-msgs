@@ -93,6 +93,12 @@ docker run --rm --network none \
         echo "expected ros-msgs debs, found none" >&2
         exit 1
       fi
+      mapfile -t scout_debs < <(
+        find /workspace/out -maxdepth 1 -type f -name "ros-${ROS_DISTRO}-scout-msgs_*.deb" -print
+      )
+      test "${#scout_debs[@]}" -eq 1
+      dpkg -i "${scout_debs[0]}"
+      /workspace/ros1-msgs/.xgc2/scripts/check_scout_installed.sh --standalone
       dpkg -i "${package_debs[@]}"
       /workspace/ros1-msgs/.xgc2/scripts/check_installed_packages.sh
     fi

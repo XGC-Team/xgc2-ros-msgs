@@ -1,6 +1,6 @@
 # XGC2 ROS1 Messages
 
-Shared ROS1 message interfaces for XGC2 Noetic packages.
+Shared ROS1 message interfaces for XGC2 Melodic and Noetic packages.
 
 This repository owns interface-only packages. Implementation packages should
 depend on these packages when they only need a topic contract.
@@ -14,10 +14,11 @@ depend on these packages when they only need a topic contract.
 - `multirotor_reference_trajectory_msgs`
 - `px4_multirotor_controller_msgs`
 - `unicycle_reference_trajectory_msgs`
+- `scout_msgs`: AgileX Scout status, motor state, and light commands
 
 ## Debian Packages
 
-The release workflow publishes one Debian package per ROS package, plus an
+The central release train publishes one Debian package per ROS package, plus an
 aggregate package:
 
 - `ros-noetic-xgc2-camera-msgs`
@@ -27,11 +28,19 @@ aggregate package:
 - `ros-noetic-xgc2-multirotor-reference-trajectory-msgs`
 - `ros-noetic-xgc2-px4-multirotor-controller-msgs`
 - `ros-noetic-xgc2-unicycle-reference-trajectory-msgs`
+- `ros-noetic-scout-msgs`
 - `ros-noetic-xgc2-ros-msgs`
 
 Use the smallest specific package when a consumer only needs one interface
 family. Use `ros-noetic-xgc2-ros-msgs` when a workspace wants all shared XGC2
-ROS1 interfaces.
+ROS1 interfaces. Melodic uses the corresponding `ros-melodic-*` packages.
+Installing `ros-noetic-scout-msgs` alone does not install the other interface families.
+
+`scout_msgs` was transferred from
+[`XGC-Team/xgc2-scout-msgs` at `92f61f26fe493ebefff0a212860bcd6d60f33fc3`](https://github.com/XGC-Team/xgc2-scout-msgs/tree/92f61f26fe493ebefff0a212860bcd6d60f33fc3).
+Its four message definitions, ROS package version `0.3.3`, message MD5 identities,
+and BSD license declaration are unchanged. This repository is the source and
+packaging owner; the old repository is retained as an archive.
 
 ## Encoded camera contract
 

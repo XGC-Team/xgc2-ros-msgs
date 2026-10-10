@@ -15,6 +15,7 @@ ROS_PACKAGES=(
   multirotor_reference_trajectory_msgs
   px4_multirotor_controller_msgs
   unicycle_reference_trajectory_msgs
+  scout_msgs
 )
 
 deb_package_for_ros_package() {
@@ -26,6 +27,7 @@ deb_package_for_ros_package() {
     multirotor_reference_trajectory_msgs) echo "ros-${ROS_DISTRO}-xgc2-multirotor-reference-trajectory-msgs" ;;
     px4_multirotor_controller_msgs) echo "ros-${ROS_DISTRO}-xgc2-px4-multirotor-controller-msgs" ;;
     unicycle_reference_trajectory_msgs) echo "ros-${ROS_DISTRO}-xgc2-unicycle-reference-trajectory-msgs" ;;
+    scout_msgs) echo "ros-${ROS_DISTRO}-scout-msgs" ;;
     *) echo "unknown ROS package: $1" >&2; exit 2 ;;
   esac
 }
@@ -39,13 +41,14 @@ deb_description_for_ros_package() {
     multirotor_reference_trajectory_msgs) echo "XGC2 multirotor reference trajectory message interfaces" ;;
     px4_multirotor_controller_msgs) echo "XGC2 PX4 multirotor controller message interfaces" ;;
     unicycle_reference_trajectory_msgs) echo "XGC2 unicycle reference trajectory message interfaces" ;;
+    scout_msgs) echo "AgileX Scout status and light command message interfaces" ;;
     *) echo "XGC2 ROS message interfaces" ;;
   esac
 }
 
 deb_depends_for_ros_package() {
   case "$1" in
-    xgc_camera_msgs|state_machine_msgs|hover_thrust_estimator_msgs)
+    xgc_camera_msgs|state_machine_msgs|hover_thrust_estimator_msgs|scout_msgs)
       echo "ros-${ROS_DISTRO}-message-runtime, ros-${ROS_DISTRO}-std-msgs"
       ;;
     *)
@@ -145,6 +148,14 @@ Maintainer: XGC2 <apt@example.com>
 Depends: $(deb_depends_for_ros_package "${ros_package}")
 Description: $(deb_description_for_ros_package "${ros_package}")
 EOF
+
+  if [[ "${ros_package}" == "scout_msgs" ]]; then
+    cat >> "${pkg_root}/DEBIAN/control" <<EOF
+Conflicts: ros-${ROS_DISTRO}-xgc2-agilex-scout-msgs
+Replaces: ros-${ROS_DISTRO}-xgc2-agilex-scout-msgs
+Provides: ros-${ROS_DISTRO}-xgc2-agilex-scout-msgs
+EOF
+  fi
 
   printf '%s package\n' "${deb_package}" > "${pkg_root}/usr/share/doc/${deb_package}/README"
   find "${pkg_root}" -type d -exec chmod 0755 {} +
