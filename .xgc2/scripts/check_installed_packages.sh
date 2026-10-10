@@ -35,7 +35,6 @@ rosmsg show xgc_camera_msgs/FrameTiming | grep -q '^uint64 mapping_uncertainty_n
 rosmsg show xgc_camera_msgs/StreamInfo | grep -q '^uint32 publisher_queue_capacity$'
 rosmsg show hover_thrust_estimator_msgs/HoverThrustEstimate | grep -q '^float64 hover_thrust$'
 rosmsg show rigid_state_estimator_msgs/RigidStateEstimate | grep -q '^geometry_msgs/Vector3 angular_velocity$'
-rosmsg show rigid_state_estimator_msgs/PlanarStateEstimate | grep -q '^uint8 estimator_state$'
 rosmsg show multirotor_reference_trajectory_msgs/SampledReference | grep -q '^multirotor_reference_trajectory_msgs/FlatReferencePoint\[\] points$'
 rosmsg show px4_multirotor_controller_msgs/NmpcDebugSample | grep -q '^float64 hover_thrust$'
 rosmsg show unicycle_reference_trajectory_msgs/SampledReference | grep -q '^unicycle_reference_trajectory_msgs/PlanarReferencePoint\[\] points$'
@@ -47,14 +46,13 @@ fi
 "${msg_python}" - <<'PY'
 from hover_thrust_estimator_msgs.msg import HoverThrustEstimate
 from multirotor_reference_trajectory_msgs.msg import AnalyticReference as UavAnalytic
-from rigid_state_estimator_msgs.msg import PlanarStateEstimate, RigidStateEstimate
+from rigid_state_estimator_msgs.msg import RigidStateEstimate
 from state_machine_msgs.msg import StateMachineTrace
 from unicycle_reference_trajectory_msgs.msg import AnalyticReference as UgvAnalytic
 from xgc_camera_msgs.msg import FrameTiming, StreamInfo
 
 assert HoverThrustEstimate.STATE_AIRBORNE == 2
 assert RigidStateEstimate.STATE_RUNNING == 3
-assert PlanarStateEstimate.STATE_RUNNING == 2
 assert UavAnalytic.ANALYTIC_TORUS_KNOT == 9
 assert UgvAnalytic.ANALYTIC_CIRCLE == 1
 assert FrameTiming.DISCONTINUITY_SOURCE_TIME_RESET == 2
