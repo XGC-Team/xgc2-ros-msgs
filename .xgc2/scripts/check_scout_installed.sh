@@ -20,7 +20,7 @@ dpkg -s "ros-${ROS_DISTRO}-scout-msgs" >/dev/null
 test "$(rospack find scout_msgs)" = "/opt/ros/${ROS_DISTRO}/share/scout_msgs"
 
 if [[ "${standalone}" == true ]]; then
-  for family in camera state-machine estimator-hover-thrust estimator-rigid-state \
+  for family in geometry camera state-machine estimator-hover-thrust estimator-rigid-state \
     multirotor-reference-trajectory px4-multirotor-controller \
     unicycle-reference-trajectory ros; do
     package="ros-${ROS_DISTRO}-xgc2-${family}-msgs"

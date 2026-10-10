@@ -16,6 +16,7 @@ ROS_PACKAGES=(
   px4_multirotor_controller_msgs
   unicycle_reference_trajectory_msgs
   scout_msgs
+  xgc2_geometry_msgs
 )
 
 deb_package_for_ros_package() {
@@ -27,6 +28,7 @@ deb_package_for_ros_package() {
     multirotor_reference_trajectory_msgs) echo "ros-${ROS_DISTRO}-xgc2-multirotor-reference-trajectory-msgs" ;;
     px4_multirotor_controller_msgs) echo "ros-${ROS_DISTRO}-xgc2-px4-multirotor-controller-msgs" ;;
     unicycle_reference_trajectory_msgs) echo "ros-${ROS_DISTRO}-xgc2-unicycle-reference-trajectory-msgs" ;;
+    xgc2_geometry_msgs) echo "ros-${ROS_DISTRO}-xgc2-geometry-msgs" ;;
     scout_msgs) echo "ros-${ROS_DISTRO}-scout-msgs" ;;
     *) echo "unknown ROS package: $1" >&2; exit 2 ;;
   esac
@@ -41,6 +43,7 @@ deb_description_for_ros_package() {
     multirotor_reference_trajectory_msgs) echo "XGC2 multirotor reference trajectory message interfaces" ;;
     px4_multirotor_controller_msgs) echo "XGC2 PX4 multirotor controller message interfaces" ;;
     unicycle_reference_trajectory_msgs) echo "XGC2 unicycle reference trajectory message interfaces" ;;
+    xgc2_geometry_msgs) echo "XGC2 scene geometry, obstacle and consumer status message interfaces" ;;
     scout_msgs) echo "AgileX Scout status and light command message interfaces" ;;
     *) echo "XGC2 ROS message interfaces" ;;
   esac

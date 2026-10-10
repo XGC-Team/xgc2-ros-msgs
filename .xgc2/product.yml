@@ -1,7 +1,7 @@
 schema: xgc2.product.v1
 id: xgc2-ros-msgs
 name: XGC2 ROS1 Messages
-version: 1.4.0-2
+version: 1.4.0-3
 kind: ros1-apt
 summary: Shared ROS1 message interfaces for XGC2 components.
 ros:
@@ -15,6 +15,7 @@ ros:
   - px4_multirotor_controller_msgs
   - unicycle_reference_trajectory_msgs
   - scout_msgs
+  - xgc2_geometry_msgs
 apt:
   distribution: bionic,focal
   install:
@@ -35,6 +36,8 @@ apt:
     - bionic
     ros-melodic-xgc2-unicycle-reference-trajectory-msgs:
     - bionic
+    ros-melodic-xgc2-geometry-msgs:
+    - bionic
     ros-melodic-scout-msgs:
     - bionic
     ros-melodic-xgc2-ros-msgs:
@@ -53,6 +56,8 @@ apt:
     - focal
     ros-noetic-xgc2-unicycle-reference-trajectory-msgs:
     - focal
+    ros-noetic-xgc2-geometry-msgs:
+    - focal
     ros-noetic-scout-msgs:
     - focal
     ros-noetic-xgc2-ros-msgs:
@@ -65,6 +70,7 @@ apt:
   - ros-melodic-xgc2-multirotor-reference-trajectory-msgs
   - ros-melodic-xgc2-px4-multirotor-controller-msgs
   - ros-melodic-xgc2-unicycle-reference-trajectory-msgs
+  - ros-melodic-xgc2-geometry-msgs
   - ros-melodic-scout-msgs
   - ros-melodic-xgc2-ros-msgs
   - ros-noetic-xgc2-camera-msgs
@@ -74,6 +80,7 @@ apt:
   - ros-noetic-xgc2-multirotor-reference-trajectory-msgs
   - ros-noetic-xgc2-px4-multirotor-controller-msgs
   - ros-noetic-xgc2-unicycle-reference-trajectory-msgs
+  - ros-noetic-xgc2-geometry-msgs
   - ros-noetic-scout-msgs
   - ros-noetic-xgc2-ros-msgs
   depends:
@@ -109,6 +116,8 @@ ownership:
   - /opt/ros/melodic/share/multirotor_reference_trajectory_msgs
   - /opt/ros/melodic/share/px4_multirotor_controller_msgs
   - /opt/ros/melodic/share/unicycle_reference_trajectory_msgs
+  - /opt/ros/melodic/share/xgc2_geometry_msgs
+  - /opt/ros/melodic/include/xgc2_geometry_msgs
   - /opt/ros/melodic/share/scout_msgs
   - /opt/ros/melodic/include/scout_msgs
   - /opt/ros/noetic/share/xgc_camera_msgs
@@ -118,9 +127,11 @@ ownership:
   - /opt/ros/noetic/share/multirotor_reference_trajectory_msgs
   - /opt/ros/noetic/share/px4_multirotor_controller_msgs
   - /opt/ros/noetic/share/unicycle_reference_trajectory_msgs
+  - /opt/ros/noetic/share/xgc2_geometry_msgs
+  - /opt/ros/noetic/include/xgc2_geometry_msgs
   - /opt/ros/noetic/share/scout_msgs
   - /opt/ros/noetic/include/scout_msgs
 release:
   apt_versions:
-    bionic: 1.4.0-2
-    focal: 1.4.0-2
+    bionic: 1.4.0-3
+    focal: 1.4.0-3

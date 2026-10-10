@@ -14,6 +14,7 @@ depend on these packages when they only need a topic contract.
 - `multirotor_reference_trajectory_msgs`
 - `px4_multirotor_controller_msgs`
 - `unicycle_reference_trajectory_msgs`
+- `xgc2_geometry_msgs`: scene geometry, obstacle snapshots/state, and consumer acknowledgements
 - `scout_msgs`: AgileX Scout status, motor state, and light commands
 
 ## Debian Packages
@@ -28,6 +29,7 @@ aggregate package:
 - `ros-noetic-xgc2-multirotor-reference-trajectory-msgs`
 - `ros-noetic-xgc2-px4-multirotor-controller-msgs`
 - `ros-noetic-xgc2-unicycle-reference-trajectory-msgs`
+- `ros-noetic-xgc2-geometry-msgs`
 - `ros-noetic-scout-msgs`
 - `ros-noetic-xgc2-ros-msgs`
 
@@ -41,6 +43,16 @@ Installing `ros-noetic-scout-msgs` alone does not install the other interface fa
 Its four message definitions, ROS package version `0.3.3`, message MD5 identities,
 and BSD license declaration are unchanged. This repository is the source and
 packaging owner; the old repository is retained as an archive.
+
+## Scene geometry messages
+
+`xgc2_geometry_msgs` was transferred from
+[`XGC-Team/xgc2-scene-generation` at `869cc7824d021bd21b3b23aceb266e4e71eeb9d7`](https://github.com/XGC-Team/xgc2-scene-generation/tree/869cc7824d021bd21b3b23aceb266e4e71eeb9d7/xgc2_geometry_msgs).
+Its eleven `.msg` definitions, ROS package version `0.1.0`, message MD5 identities,
+and MIT license declaration are unchanged. Install the independent
+`ros-noetic-xgc2-geometry-msgs` (or Melodic equivalent) without scene services,
+map generators, sensors, or other XGC2 message families. Scene implementations
+consume this package; this repository owns only the interface definitions.
 
 ## Encoded camera contract
 

@@ -93,6 +93,13 @@ docker run --rm --network none \
         echo "expected ros-msgs debs, found none" >&2
         exit 1
       fi
+      mapfile -t geometry_debs < <(
+        find /workspace/out -maxdepth 1 -type f -name "ros-${ROS_DISTRO}-xgc2-geometry-msgs_*.deb" -print
+      )
+      test "${#geometry_debs[@]}" -eq 1
+      dpkg -i "${geometry_debs[0]}"
+      /workspace/ros1-msgs/.xgc2/scripts/check_geometry_installed.sh --standalone
+      dpkg -r "ros-${ROS_DISTRO}-xgc2-geometry-msgs"
       mapfile -t scout_debs < <(
         find /workspace/out -maxdepth 1 -type f -name "ros-${ROS_DISTRO}-scout-msgs_*.deb" -print
       )
