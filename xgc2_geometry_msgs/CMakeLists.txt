@@ -19,7 +19,6 @@ add_message_files(
   SceneSnapshot.msg
   SceneObstacleState.msg
   SceneState.msg
-  SceneConsumerStatus.msg
 )
 
 generate_messages(

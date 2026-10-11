@@ -22,7 +22,7 @@ test "$(rospack find scout_msgs)" = "/opt/ros/${ROS_DISTRO}/share/scout_msgs"
 if [[ "${standalone}" == true ]]; then
   for family in geometry camera state-machine estimator-hover-thrust estimator-rigid-state \
     multirotor-reference-trajectory px4-multirotor-controller \
-    unicycle-reference-trajectory ros; do
+    unicycle-reference-trajectory ugv-reset ros; do
     package="ros-${ROS_DISTRO}-xgc2-${family}-msgs"
     if [[ "$(dpkg-query -W -f='${Status}' "${package}" 2>/dev/null || true)" == "install ok installed" ]]; then
       echo "Scout standalone check unexpectedly has ${package} installed" >&2

@@ -78,6 +78,7 @@ docker run --rm --network none \
     source /opt/ros/${ROS_DISTRO}/setup.bash
     set -u
     DESTDIR=/workspace/work/install-root catkin_make install \
+      -j2 \
       -DCMAKE_INSTALL_PREFIX=/opt/ros/${ROS_DISTRO} \
       -DCMAKE_BUILD_TYPE=Release
 
@@ -93,6 +94,17 @@ docker run --rm --network none \
         echo "expected ros-msgs debs, found none" >&2
         exit 1
       fi
+      for family in camera state-machine estimator-hover-thrust estimator-rigid-state \
+        multirotor-reference-trajectory px4-multirotor-controller \
+        unicycle-reference-trajectory ugv-reset; do
+        mapfile -t family_debs < <(
+          find /workspace/out -maxdepth 1 -type f -name "ros-${ROS_DISTRO}-xgc2-${family}-msgs_*.deb" -print
+        )
+        test "${#family_debs[@]}" -eq 1
+        dpkg -i "${family_debs[0]}"
+        /workspace/ros1-msgs/.xgc2/scripts/check_family_installed.sh "${family}" --standalone
+        dpkg -r "ros-${ROS_DISTRO}-xgc2-${family}-msgs"
+      done
       mapfile -t geometry_debs < <(
         find /workspace/out -maxdepth 1 -type f -name "ros-${ROS_DISTRO}-xgc2-geometry-msgs_*.deb" -print
       )
@@ -106,6 +118,7 @@ docker run --rm --network none \
       test "${#scout_debs[@]}" -eq 1
       dpkg -i "${scout_debs[0]}"
       /workspace/ros1-msgs/.xgc2/scripts/check_scout_installed.sh --standalone
+      dpkg -r "ros-${ROS_DISTRO}-scout-msgs"
       dpkg -i "${package_debs[@]}"
       /workspace/ros1-msgs/.xgc2/scripts/check_installed_packages.sh
     fi

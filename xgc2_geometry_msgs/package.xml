@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>xgc2_geometry_msgs</name>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <description>ROS messages for XGC2 convex geometry templates and obstacle instances.</description>
 
   <maintainer email="lxk@todo.todo">lxk</maintainer>

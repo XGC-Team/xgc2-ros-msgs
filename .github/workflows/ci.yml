@@ -74,7 +74,7 @@ jobs:
               set +u
               source /opt/ros/noetic/setup.bash
               set -u
-              catkin_make
+              catkin_make -j2
               set +u
               source devel/setup.bash
               set -u
@@ -86,6 +86,7 @@ jobs:
               test "$(rospack find multirotor_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/multirotor_reference_trajectory_msgs"
               test "$(rospack find px4_multirotor_controller_msgs)" = "$work_dir/src/ros1-msgs/px4_multirotor_controller_msgs"
               test "$(rospack find unicycle_reference_trajectory_msgs)" = "$work_dir/src/ros1-msgs/unicycle_reference_trajectory_msgs"
+              test "$(rospack find ugv_reset_msgs)" = "$work_dir/src/ros1-msgs/ugv_reset_msgs"
               rosmsg show state_machine_msgs/StateMachineTrace | grep -q "^uint64 update_index$"
               rosmsg show xgc_camera_msgs/FrameTiming | grep -q "^uint64 epoch$"
               rosmsg show xgc_camera_msgs/FrameTiming | grep -q "^int64 native_source_time_ns$"

@@ -1,7 +1,7 @@
 schema: xgc2.product.v1
 id: xgc2-ros-msgs
 name: XGC2 ROS1 Messages
-version: 1.4.0-3
+version: 1.5.0-1
 kind: ros1-apt
 summary: Shared ROS1 message interfaces for XGC2 components.
 ros:
@@ -16,6 +16,7 @@ ros:
   - unicycle_reference_trajectory_msgs
   - scout_msgs
   - xgc2_geometry_msgs
+  - ugv_reset_msgs
 apt:
   distribution: bionic,focal
   install:
@@ -40,6 +41,8 @@ apt:
     - bionic
     ros-melodic-scout-msgs:
     - bionic
+    ros-melodic-xgc2-ugv-reset-msgs:
+    - bionic
     ros-melodic-xgc2-ros-msgs:
     - bionic
     ros-noetic-xgc2-camera-msgs:
@@ -60,6 +63,8 @@ apt:
     - focal
     ros-noetic-scout-msgs:
     - focal
+    ros-noetic-xgc2-ugv-reset-msgs:
+    - focal
     ros-noetic-xgc2-ros-msgs:
     - focal
   packages:
@@ -72,6 +77,7 @@ apt:
   - ros-melodic-xgc2-unicycle-reference-trajectory-msgs
   - ros-melodic-xgc2-geometry-msgs
   - ros-melodic-scout-msgs
+  - ros-melodic-xgc2-ugv-reset-msgs
   - ros-melodic-xgc2-ros-msgs
   - ros-noetic-xgc2-camera-msgs
   - ros-noetic-xgc2-state-machine-msgs
@@ -82,6 +88,7 @@ apt:
   - ros-noetic-xgc2-unicycle-reference-trajectory-msgs
   - ros-noetic-xgc2-geometry-msgs
   - ros-noetic-scout-msgs
+  - ros-noetic-xgc2-ugv-reset-msgs
   - ros-noetic-xgc2-ros-msgs
   depends:
   - ros-melodic-message-runtime
@@ -106,6 +113,8 @@ usage:
 
     rospack find rigid_state_estimator_msgs
 
+    rospack find ugv_reset_msgs
+
     '
 ownership:
   paths:
@@ -120,6 +129,8 @@ ownership:
   - /opt/ros/melodic/include/xgc2_geometry_msgs
   - /opt/ros/melodic/share/scout_msgs
   - /opt/ros/melodic/include/scout_msgs
+  - /opt/ros/melodic/share/ugv_reset_msgs
+  - /opt/ros/melodic/include/ugv_reset_msgs
   - /opt/ros/noetic/share/xgc_camera_msgs
   - /opt/ros/noetic/share/state_machine_msgs
   - /opt/ros/noetic/share/hover_thrust_estimator_msgs
@@ -131,7 +142,9 @@ ownership:
   - /opt/ros/noetic/include/xgc2_geometry_msgs
   - /opt/ros/noetic/share/scout_msgs
   - /opt/ros/noetic/include/scout_msgs
+  - /opt/ros/noetic/share/ugv_reset_msgs
+  - /opt/ros/noetic/include/ugv_reset_msgs
 release:
   apt_versions:
-    bionic: 1.4.0-3
-    focal: 1.4.0-3
+    bionic: 1.5.0-1
+    focal: 1.5.0-1

@@ -14,8 +14,9 @@ depend on these packages when they only need a topic contract.
 - `multirotor_reference_trajectory_msgs`
 - `px4_multirotor_controller_msgs`
 - `unicycle_reference_trajectory_msgs`
-- `xgc2_geometry_msgs`: scene geometry, obstacle snapshots/state, and consumer acknowledgements
+- `xgc2_geometry_msgs`: scene geometry and obstacle snapshots/state
 - `scout_msgs`: AgileX Scout status, motor state, and light commands
+- `ugv_reset_msgs`: coordinated UGV reset requests and responses
 
 ## Debian Packages
 
@@ -31,12 +32,18 @@ aggregate package:
 - `ros-noetic-xgc2-unicycle-reference-trajectory-msgs`
 - `ros-noetic-xgc2-geometry-msgs`
 - `ros-noetic-scout-msgs`
+- `ros-noetic-xgc2-ugv-reset-msgs`
 - `ros-noetic-xgc2-ros-msgs`
 
 Use the smallest specific package when a consumer only needs one interface
 family. Use `ros-noetic-xgc2-ros-msgs` when a workspace wants all shared XGC2
-ROS1 interfaces. Melodic uses the corresponding `ros-melodic-*` packages.
-Installing `ros-noetic-scout-msgs` alone does not install the other interface families.
+ROS1 interfaces (ten families). Melodic uses the corresponding `ros-melodic-*`
+packages. Each family can be installed alone without the other interface families.
+Vehicle-side reset clients depend on `ugv_reset_msgs` and install
+`ros-noetic-xgc2-ugv-reset-msgs` (or the Melodic equivalent) to consume
+`ResetRequest` and `ResetResponse` without the station coordinator package.
+The two definitions and their message MD5 identities are unchanged from
+`ugv_reset_safety`; the ROS package version is `1.0.0`.
 
 `scout_msgs` was transferred from
 [`XGC-Team/xgc2-scout-msgs` at `92f61f26fe493ebefff0a212860bcd6d60f33fc3`](https://github.com/XGC-Team/xgc2-scout-msgs/tree/92f61f26fe493ebefff0a212860bcd6d60f33fc3).
@@ -48,8 +55,8 @@ packaging owner; the old repository is retained as an archive.
 
 `xgc2_geometry_msgs` was transferred from
 [`XGC-Team/xgc2-scene-generation` at `869cc7824d021bd21b3b23aceb266e4e71eeb9d7`](https://github.com/XGC-Team/xgc2-scene-generation/tree/869cc7824d021bd21b3b23aceb266e4e71eeb9d7/xgc2_geometry_msgs).
-Its eleven `.msg` definitions, ROS package version `0.1.0`, message MD5 identities,
-and MIT license declaration are unchanged. Install the independent
+Its ten retained `.msg` definitions, message MD5 identities, and MIT license
+declaration are unchanged. The ROS package version is `0.2.0`. Install the independent
 `ros-noetic-xgc2-geometry-msgs` (or Melodic equivalent) without scene services,
 map generators, sensors, or other XGC2 message families. Scene implementations
 consume this package; this repository owns only the interface definitions.
