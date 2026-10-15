@@ -155,6 +155,17 @@ Depends: $(deb_depends_for_ros_package "${ros_package}")
 Description: $(deb_description_for_ros_package "${ros_package}")
 EOF
 
+  # The geometry wire transition requires these migrated Noetic consumers.
+  if [[ "${ROS_DISTRO}" == "noetic" && "${ros_package}" == "xgc2_geometry_msgs" ]]; then
+    cat >> "${pkg_root}/DEBIAN/control" <<EOF
+Breaks: ros-noetic-xgc2-ugv-controller (<< 2.1.0-2),
+ ros-noetic-xgc2-scene-runtime (<< 1.3.0-3),
+ ros-noetic-xgc2-world-lidar (<< 1.3.0-3),
+ ros-noetic-xgc2-scene-adapter (<< 0.8.0-4),
+ ros-noetic-xgc2-gazebo-scene (<< 1.5.0-8)
+EOF
+  fi
+
   if [[ "${ros_package}" == "scout_msgs" ]]; then
     cat >> "${pkg_root}/DEBIAN/control" <<EOF
 Conflicts: ros-${ROS_DISTRO}-xgc2-agilex-scout-msgs
