@@ -7,3 +7,6 @@ float64 radius
 float64 height
 geometry_msgs/Point[] vertices
 uint32[] triangles
+# Euclidean tube around (radii[0]*cos(u), radii[1]*sin(u), 0).
+float64[2] radii
+float64 tube_radius
