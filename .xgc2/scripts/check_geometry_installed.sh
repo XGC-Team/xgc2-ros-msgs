@@ -37,17 +37,17 @@ if [[ "${standalone}" == true ]]; then
   done
 fi
 
-# Baseline: xgc2-scene-generation 869cc7824d021bd21b3b23aceb266e4e71eeb9d7.
+# Named-ring contract: xgc2-ros-msgs fba03b9ab3725cbef18c0cacf5873acd21aa57a8.
 for identity in \
   ConvexBodyArray:70206eec4fd6f79cb0a64a7b79934c20 \
   ConvexBodyInstance:77c10de3093d9a40425cbae59670f692 \
   GeometryLibrary:b0a5cce2fdfbff23ce9e67caf2f0f94d \
   GeometryTemplate:e5a61693d0fc452d22496f8644ac52bb \
-  SceneGeometry:9d4d23feb4e4969d309ed97648929640 \
-  SceneObstacle:a4a5a6b21d48fce24f6d577c630a66eb \
+  SceneGeometry:27400810d6ab3f8d9e51f385388c0d3f \
+  SceneObstacle:26a7817734cb028382ac0d6bae862258 \
   SceneObstacleState:ddf3839cc06dbe27265f5f18a008071e \
-  ScenePart:5b292453c4f9c000522c1cd109cb742d \
-  SceneSnapshot:5a9442e10bd849d47c40cfadb42b29af \
+  ScenePart:67148fa8971a405fe40dc3806dae6105 \
+  SceneSnapshot:9daf01025a95e39b11506412b6746382 \
   SceneState:f307520b78c47e1029c6883e2e22a7cb; do
   test "$(rosmsg md5 "xgc2_geometry_msgs/${identity%%:*}")" = "${identity#*:}"
 done
@@ -59,15 +59,29 @@ from io import BytesIO
 from xgc2_geometry_msgs.msg import SceneSnapshot, SceneObstacle, ScenePart
 
 scene = SceneSnapshot(scene_id="installed-consumer", epoch="baseline", revision=12)
-obstacle = SceneObstacle(id="box", name="Box", dynamic=False, motion_type="hold")
-obstacle.pose.orientation.w = 1.0
-obstacle.parts.append(ScenePart())
+obstacle = SceneObstacle(id="ring", name="Ring", dynamic=False, motion_type="hold")
+obstacle.pose.position.x, obstacle.pose.position.y, obstacle.pose.position.z = 3.0, -2.0, 4.0
+obstacle.pose.orientation.x = obstacle.pose.orientation.y = 0.5
+obstacle.pose.orientation.z = obstacle.pose.orientation.w = 0.5
+part = ScenePart(id="tube")
+part.pose.position.x, part.pose.position.y, part.pose.position.z = 1.0, 2.0, 3.0
+part.pose.orientation.x, part.pose.orientation.y = 0.5, -0.5
+part.pose.orientation.z = part.pose.orientation.w = 0.5
+part.geometry.type = "ring"
+part.geometry.radii = [3.0, 1.0]
+part.geometry.tube_radius = 0.8
+obstacle.parts.append(part)
 scene.obstacles.append(obstacle)
 stream = BytesIO()
 scene.serialize(stream)
 restored = SceneSnapshot().deserialize(stream.getvalue())
 assert restored.epoch == "baseline" and restored.revision == 12
 assert len(restored.obstacles) == 1 and len(restored.obstacles[0].parts) == 1
+assert restored.obstacles[0].pose == obstacle.pose
+assert restored.obstacles[0].parts[0].pose == part.pose
+assert restored.obstacles[0].parts[0].geometry.type == "ring"
+assert list(restored.obstacles[0].parts[0].geometry.radii) == [3.0, 1.0]
+assert restored.obstacles[0].parts[0].geometry.tube_radius == 0.8
 PYTHON
 
 consumer_dir="$(mktemp -d)"
@@ -85,6 +99,17 @@ int main() {
   xgc2_geometry_msgs::ConvexBodyArray bodies;
   scene.epoch = state.epoch = "installed-check";
   scene.revision = state.revision = 12;
+  xgc2_geometry_msgs::SceneObstacle obstacle;
+  xgc2_geometry_msgs::ScenePart part;
+  part.geometry.type = "ring";
+  part.geometry.radii[0] = 3.0;
+  part.geometry.radii[1] = 1.0;
+  part.geometry.tube_radius = 0.8;
+  obstacle.parts.push_back(part);
+  scene.obstacles.push_back(obstacle);
+  if (scene.obstacles[0].parts[0].geometry.radii[0] != 3.0 ||
+      scene.obstacles[0].parts[0].geometry.radii[1] != 1.0 ||
+      scene.obstacles[0].parts[0].geometry.tube_radius != 0.8) return 1;
   return scene.revision == state.revision && library.templates.empty() && bodies.instances.empty() ? 0 : 1;
 }
 CPP
