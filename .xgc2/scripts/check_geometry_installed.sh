@@ -37,26 +37,41 @@ if [[ "${standalone}" == true ]]; then
   done
 fi
 
-# Named-ring contract: xgc2-ros-msgs fba03b9ab3725cbef18c0cacf5873acd21aa57a8.
+# Unified numeric geometry payload contract; installed consumers use the same two-field wire.
 for identity in \
-  ConvexBodyArray:70206eec4fd6f79cb0a64a7b79934c20 \
-  ConvexBodyInstance:77c10de3093d9a40425cbae59670f692 \
-  GeometryLibrary:b0a5cce2fdfbff23ce9e67caf2f0f94d \
-  GeometryTemplate:e5a61693d0fc452d22496f8644ac52bb \
-  SceneGeometry:27400810d6ab3f8d9e51f385388c0d3f \
-  SceneObstacle:26a7817734cb028382ac0d6bae862258 \
+  SceneGeometry:95507b56eb79eb50395da8b09ab4282d \
+  SceneObstacle:e484ce39fe1241c98b7991257e3684c4 \
   SceneObstacleState:ddf3839cc06dbe27265f5f18a008071e \
-  ScenePart:67148fa8971a405fe40dc3806dae6105 \
-  SceneSnapshot:9daf01025a95e39b11506412b6746382 \
+  ScenePart:683b7177989159a0ea9f8690de050277 \
+  SceneSnapshot:dd808af99910ec1e74170e82b92a6f69 \
   SceneState:f307520b78c47e1029c6883e2e22a7cb; do
   test "$(rosmsg md5 "xgc2_geometry_msgs/${identity%%:*}")" = "${identity#*:}"
+done
+
+for obsolete in GeometryLibrary GeometryTemplate ConvexBodyArray ConvexBodyInstance; do
+  test ! -e "/opt/ros/${ROS_DISTRO}/include/xgc2_geometry_msgs/${obsolete}.h"
+  test ! -e "/opt/ros/${ROS_DISTRO}/share/xgc2_geometry_msgs/msg/${obsolete}.msg"
+  if rosmsg show "xgc2_geometry_msgs/${obsolete}" >/dev/null 2>&1; then
+    echo "Obsolete geometry message still installed: ${obsolete}" >&2
+    exit 1
+  fi
 done
 
 msg_python=python3
 if [[ "${ROS_DISTRO}" == melodic ]]; then msg_python=python2; fi
 "${msg_python}" - <<'PYTHON'
 from io import BytesIO
-from xgc2_geometry_msgs.msg import SceneSnapshot, SceneObstacle, ScenePart
+import pkgutil
+import struct
+import xgc2_geometry_msgs.msg as messages
+from xgc2_geometry_msgs.msg import SceneSnapshot, SceneObstacle, ScenePart, SceneGeometry
+
+for obsolete in ("GeometryLibrary", "GeometryTemplate", "ConvexBodyArray", "ConvexBodyInstance"):
+    assert not hasattr(messages, obsolete)
+    assert pkgutil.find_loader("xgc2_geometry_msgs.msg._" + obsolete) is None
+assert SceneGeometry.__slots__ == ["type", "parameters"]
+assert SceneGeometry._slot_types == ["uint32", "uint8[]"]
+payload = struct.pack("<3d", 3.0, 1.0, 0.8)
 
 scene = SceneSnapshot(scene_id="installed-consumer", epoch="baseline", revision=12)
 obstacle = SceneObstacle(id="ring", name="Ring", dynamic=False, motion_type="hold")
@@ -67,9 +82,8 @@ part = ScenePart(id="tube")
 part.pose.position.x, part.pose.position.y, part.pose.position.z = 1.0, 2.0, 3.0
 part.pose.orientation.x, part.pose.orientation.y = 0.5, -0.5
 part.pose.orientation.z = part.pose.orientation.w = 0.5
-part.geometry.type = "ring"
-part.geometry.radii = [3.0, 1.0]
-part.geometry.tube_radius = 0.8
+part.geometry.type = 6
+part.geometry.parameters = payload
 obstacle.parts.append(part)
 scene.obstacles.append(obstacle)
 stream = BytesIO()
@@ -79,42 +93,35 @@ assert restored.epoch == "baseline" and restored.revision == 12
 assert len(restored.obstacles) == 1 and len(restored.obstacles[0].parts) == 1
 assert restored.obstacles[0].pose == obstacle.pose
 assert restored.obstacles[0].parts[0].pose == part.pose
-assert restored.obstacles[0].parts[0].geometry.type == "ring"
-assert list(restored.obstacles[0].parts[0].geometry.radii) == [3.0, 1.0]
-assert restored.obstacles[0].parts[0].geometry.tube_radius == 0.8
+assert restored.obstacles[0].parts[0].geometry.type == 6
+assert bytes(bytearray(restored.obstacles[0].parts[0].geometry.parameters)) == payload
 PYTHON
 
 consumer_dir="$(mktemp -d)"
 trap 'rm -rf "${consumer_dir}"' EXIT
 cat > "${consumer_dir}/consumer.cpp" <<'CPP'
-#include <xgc2_geometry_msgs/ConvexBodyArray.h>
-#include <xgc2_geometry_msgs/GeometryLibrary.h>
 #include <xgc2_geometry_msgs/SceneSnapshot.h>
 #include <xgc2_geometry_msgs/SceneState.h>
 
 int main() {
   xgc2_geometry_msgs::SceneSnapshot scene;
   xgc2_geometry_msgs::SceneState state;
-  xgc2_geometry_msgs::GeometryLibrary library;
-  xgc2_geometry_msgs::ConvexBodyArray bodies;
   scene.epoch = state.epoch = "installed-check";
   scene.revision = state.revision = 12;
   xgc2_geometry_msgs::SceneObstacle obstacle;
   xgc2_geometry_msgs::ScenePart part;
-  part.geometry.type = "ring";
-  part.geometry.radii[0] = 3.0;
-  part.geometry.radii[1] = 1.0;
-  part.geometry.tube_radius = 0.8;
+  part.geometry.type = 6;
+  part.geometry.parameters = {0,0,0,0,0,0,8,64, 0,0,0,0,0,0,240,63,
+                              154,153,153,153,153,153,233,63};
   obstacle.parts.push_back(part);
   scene.obstacles.push_back(obstacle);
-  if (scene.obstacles[0].parts[0].geometry.radii[0] != 3.0 ||
-      scene.obstacles[0].parts[0].geometry.radii[1] != 1.0 ||
-      scene.obstacles[0].parts[0].geometry.tube_radius != 0.8) return 1;
-  return scene.revision == state.revision && library.templates.empty() && bodies.instances.empty() ? 0 : 1;
+  if (scene.obstacles[0].parts[0].geometry.type != 6 ||
+      scene.obstacles[0].parts[0].geometry.parameters != part.geometry.parameters) return 1;
+  return scene.revision == state.revision ? 0 : 1;
 }
 CPP
 # shellcheck disable=SC2046
 c++ -std=c++11 $(pkg-config --cflags xgc2_geometry_msgs) \
   "${consumer_dir}/consumer.cpp" -o "${consumer_dir}/consumer"
 "${consumer_dir}/consumer"
-echo "Installed geometry check passed (standalone=${standalone}; C++, Python, ten MD5 identities)"
+echo "Installed geometry check passed (standalone=${standalone}; C++, Python, six MD5 identities; obsolete types absent)"

@@ -9,10 +9,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  GeometryTemplate.msg
-  GeometryLibrary.msg
-  ConvexBodyInstance.msg
-  ConvexBodyArray.msg
   SceneGeometry.msg
   ScenePart.msg
   SceneObstacle.msg
@@ -30,3 +26,7 @@ generate_messages(
 catkin_package(
   CATKIN_DEPENDS geometry_msgs message_runtime std_msgs
 )
+
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_nosetests(test/geometry_wire_test.py)
+endif()

@@ -1,12 +1,4 @@
-# Geometry in the part frame, metres. Cylinder/capsule axis is local Z.
-# box: size is full side length; sphere: radius; cylinder: radius and full height.
-# capsule: radius and straight cylindrical height; convex: vertices and triangle indices.
-string type
-geometry_msgs/Vector3 size
-float64 radius
-float64 height
-geometry_msgs/Point[] vertices
-uint32[] triangles
-# Euclidean tube around (radii[0]*cos(u), radii[1]*sin(u), 0).
-float64[2] radii
-float64 tube_radius
+# Geometry in the part frame, metres. Type registry and binary layout are
+# defined by xgc2_math/geometry/geometry_payload.hpp (little-endian binary64).
+uint32 type
+uint8[] parameters
