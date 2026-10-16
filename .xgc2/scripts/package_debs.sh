@@ -158,11 +158,12 @@ EOF
   # The geometry wire transition requires these migrated Noetic consumers.
   if [[ "${ROS_DISTRO}" == "noetic" && "${ros_package}" == "xgc2_geometry_msgs" ]]; then
     cat >> "${pkg_root}/DEBIAN/control" <<EOF
-Breaks: ros-noetic-xgc2-ugv-controller (<< 2.1.0-2),
- ros-noetic-xgc2-scene-runtime (<< 1.3.0-3),
- ros-noetic-xgc2-world-lidar (<< 1.3.0-3),
- ros-noetic-xgc2-scene-adapter (<< 0.8.0-4),
- ros-noetic-xgc2-gazebo-scene (<< 1.5.0-8)
+Breaks: ros-noetic-xgc2-ugv-controller (<< 2.1.0-3),
+ ros-noetic-xgc2-scene-runtime (<< 1.3.0-4),
+ ros-noetic-xgc2-world-lidar (<< 1.3.0-4),
+ ros-noetic-xgc2-scene-adapter (<< 0.8.0-5),
+ ros-noetic-xgc2-gazebo-scene (<< 1.5.0-9),
+ xsim (<< 1.4.0-4)
 EOF
   fi
 
