@@ -12,6 +12,7 @@ add_message_files(
   SceneGeometry.msg
   ScenePart.msg
   SceneObstacle.msg
+  SceneGround.msg
   SceneSnapshot.msg
   SceneObstacleState.msg
   SceneState.msg
@@ -29,4 +30,5 @@ catkin_package(
 
 if(CATKIN_ENABLE_TESTING)
   catkin_add_nosetests(test/geometry_wire_test.py)
+  catkin_add_nosetests(test/ground_wire_test.py)
 endif()
