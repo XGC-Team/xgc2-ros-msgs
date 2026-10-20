@@ -16,7 +16,8 @@ depend on these packages when they only need a topic contract.
 - `unicycle_reference_trajectory_msgs`
 - `xgc2_geometry_msgs`: scene geometry and obstacle snapshots/state
 - `scout_msgs`: AgileX Scout status, motor state, and light commands
-- `ugv_reset_msgs`: coordinated UGV reset requests and responses
+- `ugv_reset_msgs`: coordinated UGV reset: session, grant, result and fleet messages
+  (the request/response lease pair is the legacy protocol)
 
 ## Debian Packages
 
@@ -41,9 +42,9 @@ ROS1 interfaces (ten families). Melodic uses the corresponding `ros-melodic-*`
 packages. Each family can be installed alone without the other interface families.
 Vehicle-side reset clients depend on `ugv_reset_msgs` and install
 `ros-noetic-xgc2-ugv-reset-msgs` (or the Melodic equivalent) to consume
-`ResetRequest` and `ResetResponse` without the station coordinator package.
-The two definitions and their message MD5 identities are unchanged from
-`ugv_reset_safety`; the ROS package version is `1.0.0`.
+`ResetSession`, `ResetGrant`, `ResetResult` and `ResetFleet` (and the legacy
+`ResetRequest` and `ResetResponse`, unchanged) without the station coordinator package.
+The ROS package version is `1.1.0`.
 
 `scout_msgs` was transferred from
 [`XGC-Team/xgc2-scout-msgs` at `92f61f26fe493ebefff0a212860bcd6d60f33fc3`](https://github.com/XGC-Team/xgc2-scout-msgs/tree/92f61f26fe493ebefff0a212860bcd6d60f33fc3).
