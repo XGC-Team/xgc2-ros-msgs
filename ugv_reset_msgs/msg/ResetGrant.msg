@@ -1,7 +1,8 @@
 # The coordinator's permission to move, coordinator -> vehicle on <ns>/reset/grant.
 # A grant is a frozen route plus the prefix of it the vehicle may drive. The prefix only grows while
 # the vehicle follows the route (a new grant_id with the same route), and the vehicle stops at its
-# end. valid_until is a heartbeat: the vehicle brakes when it passes without a refresh.
+# end. ttl is a heartbeat: the vehicle brakes when it passes without a refresh. The coordinator
+# repeats an unchanged grant at >= 2 Hz.
 std_msgs/Header header
 uint32 session                  # the vehicle session this answers; anything else is ignored
 
@@ -13,10 +14,12 @@ uint8 state
 
 uint32 grant_id                 # increases with every message of one route; 0 for a HOLD
 geometry_msgs/Pose2D start      # pose the route was planned from
+geometry_msgs/Pose2D goal       # where the route ends: the target for a final move, a parking pose otherwise
+bool final_move                 # true: the route ends at the target and the arrival gate applies
 float64 ell_plan                # rotation-centre offset the route was planned for
-geometry_msgs/Point[] via       # interior waypoints of the body-origin route (z = 0); goal is the target
+geometry_msgs/Point[] via       # interior vertices of the rotation-centre polyline (z = 0)
 float64 s_limit                 # arc length of the route the vehicle may reach (>= route length: all)
-time valid_until                # heartbeat deadline on the coordinator's clock
+float64 ttl                     # seconds the grant holds after it is received (wall clock of the vehicle)
 
 # Why the vehicle is held, braked or rejected. A REJECT ends the session; ResetResult.reason repeats this code.
 uint8 REASON_NONE=0
