@@ -42,9 +42,9 @@ ROS1 interfaces (ten families). Melodic uses the corresponding `ros-melodic-*`
 packages. Each family can be installed alone without the other interface families.
 Vehicle-side reset clients depend on `ugv_reset_msgs` and install
 `ros-noetic-xgc2-ugv-reset-msgs` (or the Melodic equivalent) to consume
-`ResetSession`, `ResetGrant`, `ResetResult` and `ResetFleet` (and the legacy
-`ResetRequest` and `ResetResponse`, unchanged) without the station coordinator package.
-The ROS package version is `1.1.0`.
+`ResetSession`, `ResetGrant`, `ResetResult` and `ResetFleet` without the station coordinator package.
+Version 2.0.0 removed the lease pair `ResetRequest` and `ResetResponse`, which no vehicle or coordinator sends any more.
+The ROS package version is `2.0.0`.
 
 `scout_msgs` was transferred from
 [`XGC-Team/xgc2-scout-msgs` at `92f61f26fe493ebefff0a212860bcd6d60f33fc3`](https://github.com/XGC-Team/xgc2-scout-msgs/tree/92f61f26fe493ebefff0a212860bcd6d60f33fc3).

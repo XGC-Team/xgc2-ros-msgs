@@ -9,8 +9,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  ResetRequest.msg
-  ResetResponse.msg
   ResetSession.msg
   ResetGrant.msg
   ResetResult.msg

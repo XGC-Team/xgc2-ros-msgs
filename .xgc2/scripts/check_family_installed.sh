@@ -62,10 +62,14 @@ case "${family}" in
     ;;
   ugv-reset)
     ros_package=ugv_reset_msgs
-    # Baseline: the original ugv_reset_safety message-generation build.
+    # The session, grant, result and fleet protocol (2.0.0 removed the lease pair ResetRequest and
+    # ResetResponse; they are asserted absent by the consumer's installed-package check).
     identities=(
-      ResetRequest:1a980193371fed0123951c52adf6d32f
-      ResetResponse:cbd0cfaa871c6d40d405dd1c45488fa5
+      ResetFleet:e0732d75627163db9f601e44a4eec2c8
+      ResetFleetMember:5138864d3985b2451a5660184c5fafdc
+      ResetGrant:7fbd3a118b9f158d62c1359da486102d
+      ResetResult:1c6e3a8ef67342fea98c7d38c3c7defb
+      ResetSession:866c909dd62d4badc9cc52a0fa71b236
     )
     ;;
   *)
