@@ -64,12 +64,13 @@ case "${family}" in
     ros_package=ugv_reset_msgs
     # The session, grant, result and fleet protocol (2.0.0 removed the lease pair ResetRequest and
     # ResetResponse; they are asserted absent by the consumer's installed-package check).
+    # Session/Grant identities include the causal request generation and stop receipt fields.
     identities=(
       ResetFleet:e0732d75627163db9f601e44a4eec2c8
       ResetFleetMember:5138864d3985b2451a5660184c5fafdc
-      ResetGrant:7fbd3a118b9f158d62c1359da486102d
+      ResetGrant:d09eed3cc7592b3dc6805a4b3bac628a
       ResetResult:1c6e3a8ef67342fea98c7d38c3c7defb
-      ResetSession:866c909dd62d4badc9cc52a0fa71b236
+      ResetSession:ba612a981341c9243dc8899e44dff3c6
     )
     ;;
   *)

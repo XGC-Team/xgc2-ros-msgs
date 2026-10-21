@@ -4,12 +4,18 @@
 # every change of phase or session. The vehicle declares everything the planner needs about itself.
 std_msgs/Header header          # stamp: the vehicle's clock when the message was made
 uint32 session                  # vehicle counter; a new Reset click is a new session, never reused
+# Nonzero transaction counter of this live executor; continues across session changes.
+uint32 request_generation
+# Exact accepted decision echoed back; zero until this request's BRAKE was received.
+uint32 acknowledged_grant_id
+# True only for this request's BRAKE after actual zero publication and fresh stopped samples.
+bool stop_certified
 time pose_stamp                 # stamp of the pose below
 geometry_msgs/Pose2D pose       # measured body-origin pose in the world frame
 geometry_msgs/Pose2D target     # the frozen target of this session (valid when phase != IDLE)
 
 uint8 PHASE_IDLE=0              # not resetting
-uint8 PHASE_REQUESTING=1        # entered Reset, waiting for the first grant
+uint8 PHASE_REQUESTING=1        # active Reset requesting a route; certificate is separate
 uint8 PHASE_WAITING=2           # holding at a hold point, or between moves
 uint8 PHASE_MOVING=3
 uint8 PHASE_SETTLING=4          # at the end of the route, closing the arrival gate

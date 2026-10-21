@@ -6,13 +6,16 @@
 std_msgs/Header header
 uint32 session                  # the vehicle session this answers; anything else is ignored
 
+# Echo the vehicle's current request generation on every state, including synthetic replies.
+uint32 request_generation
+
 uint8 STATE_HOLD=0              # do not move (waiting; reason says why)
 uint8 STATE_GO=1                # follow the route up to s_limit
 uint8 STATE_BRAKE=2             # stop now, keep the session (route revoked, re-plan follows)
 uint8 STATE_REJECT=3            # the session ends with reason as its outcome
 uint8 state
 
-uint32 grant_id                 # increases with every message of one route; 0 for a HOLD
+uint32 grant_id                 # nonzero checked decision id for every state; heartbeat keeps id
 geometry_msgs/Pose2D start      # pose the route was planned from
 geometry_msgs/Pose2D goal       # where the route ends: the target for a final move, a parking pose otherwise
 bool final_move                 # true: the route ends at the target and the arrival gate applies
