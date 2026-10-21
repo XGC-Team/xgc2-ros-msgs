@@ -146,5 +146,5 @@ ownership:
   - /opt/ros/noetic/include/ugv_reset_msgs
 release:
   apt_versions:
-    bionic: 1.5.0-4
-    focal: 1.5.0-4
+    bionic: 2.0.0-1
+    focal: 2.0.0-1
