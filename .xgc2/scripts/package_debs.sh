@@ -167,6 +167,14 @@ Breaks: ros-noetic-xgc2-ugv-controller (<< 2.1.0-3),
 EOF
   fi
 
+  # Reset 2.0 replaces the lease messages and changes the typed ROS wire contract.
+  # Controllers built against the old generated messages must not coexist with it.
+  if [[ "${ROS_DISTRO}" == "noetic" && "${ros_package}" == "ugv_reset_msgs" ]]; then
+    cat >> "${pkg_root}/DEBIAN/control" <<EOF
+Breaks: ros-noetic-xgc2-ugv-controller (<< 3.0.0-1)
+EOF
+  fi
+
   if [[ "${ros_package}" == "scout_msgs" ]]; then
     cat >> "${pkg_root}/DEBIAN/control" <<EOF
 Conflicts: ros-${ROS_DISTRO}-xgc2-agilex-scout-msgs
